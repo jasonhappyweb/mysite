@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get and Post Data Example</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    #container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+    }
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="inputContainer">
+    <label for="idInput">ID:</label>
+    <input type="text" id="idInput" value="1">
+    <br>
+    <label for="nameInput">Name:</label>
+    <input type="text" id="nameInput" value="newname">
+    <br>
+    <label for="ordersInput">Orders:</label>
+    <input type="text" id="ordersInput" value="string">
+    <br>
+    <button onclick="postData()">Post Data</button>
+  </div>
+  <div id="responseContainer"></div> <!-- This will be used to display the response -->
+  <div id="tableContainer"></div> <!-- This will be used to display the table -->
+  <button onclick="getData()">Get Data</button>
+  <script>
+      function postData() {
+        var dataUrl = "https://localhost:7134/api/Todo";  // Please ensure this is your actual API route
+        var id = document.getElementById("idInput").value;
+        var name = document.getElementById("nameInput").value;
+        var orders = document.getElementById("ordersInput").value;
+        var requestData = {
+          "Id": id,
+          "name": name,
+          "orders": orders
+        };
+  
+        $.ajax({
+          type: "POST",
+          url: dataUrl,
+          data: JSON.stringify(requestData),
+          contentType: "application/json",
+          success: function(response) {
+            // Display successful response on the webpage
+            var responseContainer = document.getElementById("responseContainer");
+            alert("success");
+            getData();
+          },
+          error: function(error) {
+            // Handle errors and display error message
+            var responseContainer = document.getElementById("responseContainer");
+            responseContainer.innerHTML = "<p>Error Occurred: " + JSON.stringify(error) + "</p>";
+            console.error("An error occurred:", error);
+          }
+        });
+      }
+    </script>
+<script>
+    function getData() {
+      var dataUrl = "https://localhost:7134/api/Todo";  // Please ensure this is your actual API route
+
+      $.ajax({
+        type: "GET",
+        url: dataUrl,
+        success: function(response) {
+          var tableContainer = document.getElementById("tableContainer");
+          tableContainer.innerHTML = ""; // Clear existing table if any
+
+          // Create and populate the table
+          var table = document.createElement("table");
+          table.innerHTML = `
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Orders</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <!-- Data rows will be added here -->
+            </tbody>
+          `;
+          
+          var tableBody = table.querySelector("#tableBody");
+          response.forEach(item => {
+            var row = document.createElement("tr");
+            row.innerHTML = `
+            <td>${item.id}</td>
+            <td>${item.name}</td>
+            <td>${item.orders}</td>
+            <td><button onclick="editData(${item.id})">Edit</button>  <button onclick="deleteData(${item.id})">Delete</button></td>
+            `;
+            tableBody.appendChild(row);
+          });
+
+          tableContainer.appendChild(table);
+        },
+        error: function(error) {
+          // Handle errors and display error message
+          var responseContainer = document.getElementById("responseContainer");
+          responseContainer.innerHTML = "<p>Error Occurred: " + JSON.stringify(error) + "</p>";
+          console.error("An error occurred:", error);
+        }
+      });
+    }
+
+    function editData(id) {
+
+      console.log("Edit data for ID:", id);
+    }
+    function deleteData(id) {
+      var dataUrl = "https://localhost:7134/api/Todo/" + id;
+    
+      $.ajax({
+        type: "DELETE",
+        url: dataUrl,
+        success: function(response) {
+          // 删除成功的处理代码，例如重新加载数据表格
+          getData(); // 重新获取数据并刷新表格
+          console.log("Data deleted successfully");
+        },
+        error: function(error) {
+          var responseContainer = document.getElementById("responseContainer");
+          responseContainer.innerHTML = "<p>Error Occurred: " + JSON.stringify(error) + "</p>";
+          console.error("An error occurred:", error);
+        }
+      });
+    }
+    
+  </script>
+</body>
+</html>
