@@ -14,26 +14,32 @@
             margin: 0;
             background: url('https://jasonhappyweb.github.io/mysite/轉盤遊戲/LINE_ALBUM_1130715_240729_1.jpg') no-repeat center center fixed;
             background-size: cover;
+            position: relative; /* 使 body 相對定位，遮罩層會在其上層 */
         }
         .overlay {
-            position: relative; /* 改為相對定位 */
-            width: 90vw; /* 使用視窗寬度的百分比 */
-            height: 90vh; /* 使用視窗高度的百分比 */
+            position: absolute; /* 絕對定位於 body 上 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(255, 255, 255, 0.5);
             backdrop-filter: blur(5px);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 10px; /* 可選圓角 */
+            border-radius: 10px;
+            box-sizing: border-box;
         }
         #wheelCanvas {
             border: 2px solid black;
             border-radius: 50%;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             background-color: rgba(255, 255, 255, 0.3);
-            max-width: 90%; /* 響應式大小 */
-            max-height: 70vh; /* 響應式大小 */
+            width: 80vw; /* 使用視窗寬度的百分比 */
+            height: 80vw; /* 使畫布為正方形 */
+            max-width: 400px; /* 最大寬度 */
+            max-height: 400px; /* 最大高度 */
         }
         #spinButton {
             margin: 20px auto;
