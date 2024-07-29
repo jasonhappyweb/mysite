@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抽出你的動物</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: url('https://jasonhappyweb.github.io/mysite/轉盤遊戲/LINE_ALBUM_1130715_240729_1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative; /* 使 body 相對定位，遮罩層會在其上層 */
+        }
+        .overlay {
+            position: absolute; /* 絕對定位於 body 上 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+        #buttonContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .specialButton {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 1.2rem; /* 響應式字型大小 */
+            background-color: #4caf50; /* 特殊按鈕的背景顏色 */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .specialButton:hover {
+            background-color: #388e3c; /* 特殊按鈕的懸停顏色 */
+        }
+        #wheelCanvas {
+            border: 2px solid black;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            background-color: rgba(255, 255, 255, 0.3);
+            width: 80vw; /* 使用視窗寬度的百分比 */
+            height: 80vw; /* 使畫布為正方形 */
+            max-width: 400px; /* 最大寬度 */
+            max-height: 400px; /* 最大高度 */
+        }
+        #spinButton {
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 1.2rem; /* 響應式字型大小 */
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #spinButton:hover {
+            background-color: #ff4500;
+        }
+        @media (max-width: 600px) {
+            #spinButton, .specialButton {
+                font-size: 1rem; /* 小螢幕上的較小字型大小 */
+                padding: 8px 16px; /* 調整小螢幕上的內邊距 */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay">
+    <div id="buttonContainer">
+        <button class="specialButton" onclick="window.location.href='special.html'">Special 1</button>
+        <button class="specialButton" onclick="window.location.href='special1.html'">Special 2</button>
+        <button class="specialButton" onclick="window.location.href='special2.html'">Special 3</button>
+        <button class="specialButton" onclick="window.location.href='special3.html'">Special 4</button>
+        <button class="specialButton" onclick="window.location.href='special4.html'">Special 5</button>
+        <button class="specialButton" onclick="window.location.href='special5.html'">Special 6</button>
+    </div>
+    <canvas id="wheelCanvas" width="400" height="400"></canvas>
+    <button id="spinButton">旋轉</button>
+</div>
+
+<script>
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const segments = 20;
+    const segmentAngle = (2 * Math.PI) / segments;
+    const animals = ["獅子", "老虎", "熊", "大象", "長頸鹿", "猴子", "斑馬", "袋鼠", "豹", "狐狸",
+                     "狼", "兔子", "烏龜", "鱷魚", "鴨子", "貓頭鷹", "孔雀", "松鼠", "蝴蝶", "青蛙"];
+    const animalPages = {
+        "獅子": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/lion.html",
+        "老虎": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/tiger.html",
+        "熊": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/bear.html",
+        "大象": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/elephant.html",
+        "長頸鹿": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/giraffe.html",
+        "猴子": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/Monkey.html",
+        "斑馬": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/zebra.html",
+        "袋鼠": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/kangaroo.html",
+        "豹": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/leopard.html",
+        "狐狸": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/fox.html",
+        "狼": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/wolf.html",
+        "兔子": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/rabbit.html",
+        "烏龜": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/turtle.html",
+        "鱷魚": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/crocodile.html",
+        "鴨子": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/duck.html",
+        "貓頭鷹": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/owl.html",
+        "孔雀": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/peacock.html",
+        "松鼠": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/squirrel.html",
+        "蝴蝶": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/butterfly.html",
+        "青蛙": "https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/frog.html"
+    };
+    let currentAngle = 0;
+    let spinTimeout = null;
+    let spinVelocity = 0;
+    let deceleration = 0.0005; // 減速度
+    let isSpinning = false;
+
+    function drawSegment(index, color) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(200, 200);
+        ctx.arc(200, 200, 200, index * segmentAngle, (index + 1) * segmentAngle);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.save();
+        ctx.translate(200, 200);
+        ctx.rotate((index + 0.5) * segmentAngle);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "white";
+        ctx.font = "bold 12px Arial";
+        ctx.fillText(animals[index], 180, 10);
+        ctx.restore();
+    }
+
+    function drawWheel() {
+        for (let i = 0; i < segments; i++) {
+            drawSegment(i, i % 2 === 0 ? "rgba(255, 215, 0, 0.6)" : "rgba(255, 99, 71, 0.6)");
+        }
+    }
+
+    function rotateWheel() {
+        currentAngle += spinVelocity;
+        spinVelocity *= (1 - deceleration);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(200, 200);
+        ctx.rotate(currentAngle);
+        ctx.translate(-200, -200);
+        drawWheel();
+        ctx.restore();
+
+        if (isSpinning) {
+            spinTimeout = requestAnimationFrame(rotateWheel);
+        } else {
+            stopWheel();
+        }
+    }
+
+    function stopWheel() {
+        cancelAnimationFrame(spinTimeout);
+        const selectedSegment = Math.floor((currentAngle / segmentAngle) % segments);
+        const selectedAnimal = animals[selectedSegment];
+        const redirectPage = animalPages[selectedAnimal];
+        if (redirectPage) {
+            window.location.href = redirectPage;
+        }
+        document.getElementById('spinButton').textContent = "旋轉";
+        isSpinning = false;
+    }
+
+    document.getElementById('spinButton').addEventListener('click', () => {
+        if (!isSpinning) {
+            isSpinning = true;
+            currentAngle = Math.random() * 2 * Math.PI;
+            spinVelocity = Math.random() * 0.1 + 0.1; // 初始速度
+            rotateWheel();
+            document.getElementById('spinButton').textContent = "停止";
+        } else {
+            isSpinning = false;
+        }
+    });
+
+    drawWheel();
+</script>
+
+</body>
+</html>
