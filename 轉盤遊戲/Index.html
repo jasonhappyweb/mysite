@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,30 +16,29 @@
             background-size: cover;
         }
         .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: relative; /* 改為相對定位 */
+            width: 90vw; /* 使用視窗寬度的百分比 */
+            height: 90vh; /* 使用視窗高度的百分比 */
             background: rgba(255, 255, 255, 0.5);
             backdrop-filter: blur(5px);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            border-radius: 10px; /* 可選圓角 */
         }
         #wheelCanvas {
             border: 2px solid black;
-            margin: 20px auto;
             border-radius: 50%;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             background-color: rgba(255, 255, 255, 0.3);
+            max-width: 90%; /* 響應式大小 */
+            max-height: 70vh; /* 響應式大小 */
         }
         #spinButton {
-            display: block;
             margin: 20px auto;
             padding: 10px 20px;
-            font-size: 16px;
+            font-size: 1.2rem; /* 響應式字型大小 */
             background-color: #ff6347;
             color: white;
             border: none;
@@ -49,6 +48,12 @@
         }
         #spinButton:hover {
             background-color: #ff4500;
+        }
+        @media (max-width: 600px) {
+            #spinButton {
+                font-size: 1rem; /* 小螢幕上的較小字型大小 */
+                padding: 8px 16px; /* 調整小螢幕上的內邊距 */
+            }
         }
     </style>
 </head>
