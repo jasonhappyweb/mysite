@@ -26,9 +26,12 @@
             margin: 20px;
         }
         .video-container video {
-            max-width: 80%;
-            border: 5px solid #6c63ff;
-            border-radius: 10px;
+            width: 640px; /* 設定影片的寬度 */
+            height: 360px; /* 設定影片的高度 */
+            max-width: 100%; /* 確保在小螢幕上自適應 */
+            border: 5px solid #6c63ff; /* 設定邊框 */
+            border-radius: 10px; /* 設定圓角 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 增加陰影效果 */
         }
         .gallery {
             text-align: center; /* 將畫廊內容置中 */
@@ -46,17 +49,16 @@
 <body>
     <header>
         <h1>我們在一起</h1>
-        <p>我們的影片</p>
+        <p>我們的回憶</p>
     </header>
     <div class="video-container">
         <h2>影片展示</h2>
         <video controls>
-            <source src="example.mp4" type="video/mp4">
-            
+            <source src="marryvideo.mp4" type="video/mp4">
         </video>
     </div>
     <div class="gallery">
-        <h2>圖片畫廊</h2>
+        <h2>照片畫廊</h2>
         <img src="LINE_ALBUM_💙2023225-27宜蘭輕旅行💙_241126_1.jpg" alt="Photo 1">
         <img src="LINE_ALBUM_2023109-10 新竹旅行_241126_1.jpg" alt="Photo 2">
         <img src="LINE_ALBUM_💗懇親遊💗屏東小琉球_241126_1.jpg" alt="Photo 3">
