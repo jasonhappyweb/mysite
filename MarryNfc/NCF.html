@@ -18,19 +18,6 @@
             background-color: #6c63ff;
             color: white;
         }
-        .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 20px;
-        }
-        .gallery img {
-            max-width: 300px;
-            margin: 10px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s;
-        }
         .gallery img:hover {
             transform: scale(1.05);
         }
@@ -43,25 +30,36 @@
             border: 5px solid #6c63ff;
             border-radius: 10px;
         }
+        .gallery {
+            text-align: center; /* 將畫廊內容置中 */
+        }
+        .gallery img {
+            width: 300px; /* 設定圖片的寬度 */
+            height: 200px; /* 設定圖片的高度 */
+            object-fit: cover; /* 確保圖片裁剪而不會變形 */
+            margin: 10px; /* 增加圖片之間的間距 */
+            border: 2px solid #ccc; /* 增加圖片邊框 */
+            border-radius: 8px; /* 圓角效果 */
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>我們在一起</h1>
-        <p>展示影片與照片的最佳平台</p>
+        <p>我們的影片</p>
     </header>
     <div class="video-container">
         <h2>影片展示</h2>
         <video controls>
             <source src="example.mp4" type="video/mp4">
-            您的瀏覽器不支援影片播放。
+            
         </video>
     </div>
     <div class="gallery">
         <h2>圖片畫廊</h2>
-        <img src="photo1.jpg" alt="Photo 1">
-        <img src="photo2.jpg" alt="Photo 2">
-        <img src="photo3.jpg" alt="Photo 3">
+        <img src="LINE_ALBUM_💙2023225-27宜蘭輕旅行💙_241126_1.jpg" alt="Photo 1">
+        <img src="LINE_ALBUM_2023109-10 新竹旅行_241126_1.jpg" alt="Photo 2">
+        <img src="LINE_ALBUM_💗懇親遊💗屏東小琉球_241126_1.jpg" alt="Photo 3">
     </div>
 </body>
 </html>
