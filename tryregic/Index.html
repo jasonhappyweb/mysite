@@ -40,19 +40,20 @@
             background-color: #f9f9f9;
             border: 1px solid #ddd;
             border-radius: 10px;
+            overflow-x: auto;
         }
-        .data-item {
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .data-item label {
-            font-weight: bold;
-            color: #555;
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
         }
-        .data-item span {
-            color: #333;
-            padding-left: 10px;
+        th {
+            background-color: #007BFF;
+            color: white;
         }
         .highlight {
             background-color: #e0f7fa;
@@ -89,52 +90,59 @@
             <button id="fetchBtn">查詢</button>
         </div>
         <div class="button-container">
-        <a href="Insert.html">
-            <button id="insertBtn">新增資料</button>
-        </a>
-    </div>
-        <div class="data-display" id="dataDisplay">
-            <!-- Data will be dynamically inserted here -->
+            <a href="Insert.html">
+                <button id="insertBtn">新增資料</button>
+            </a>
         </div>
-        
+        <div class="data-display" id="dataDisplay">
+            <!-- Data will be displayed as a table -->
+        </div>
     </div>
 
     <script>
         const baseUrl = "https://ap13.ragic.com/OCHDB/ragicsales-order-management/1";
         const apiKey = "dkRKQnBSWCtMZjdja0pnYW5DUFBXZjZMbXNOR3NwYkFkSmI2UStQR2ZEWStxRU5KQ1FHOEQybGFERWFLWUpOVQ=";
 
-        // Function to display a single record
-        function displayRecord(record) {
-            return `
-                <div class="data-item">
-                    <label for="name">姓名:</label>
-                    <span>${record.Name}</span>
-                </div>
-                <div class="data-item">
-                    <label for="people">人數:</label>
-                    <span>${record.people}</span>
-                </div>
-                <div class="data-item">
-                    <label for="times">次數:</label>
-                    <span>${record.times}</span>
-                </div>
-                <div class="data-item">
-                    <label for="talk">對話:</label>
-                    <span>${record.talk}</span>
-                </div>
-                <div class="data-item">
-                    <label for="line">Line:</label>
-                    <span>${record.line}</span>
-                </div>
-                <div class="data-item">
-                    <label for="createDatetime">上傳時間:</label>
-                    <span class="highlight">${record.CreateDatetime}</span>
-                </div>
-                <div class="data-item">
-                    <label for="ragicId">Ragic ID:</label>
-                    <span>${record._ragicId}</span>
-                </div>
+        // Function to display data as a table
+        function displayTable(data) {
+            let tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>姓名</th>
+                            <th>人數</th>
+                            <th>次數</th>
+                            <th>對話</th>
+                            <th>Line</th>
+                            <th>上傳時間</th>
+                        </tr>
+                    </thead>
+                    <tbody>
             `;
+
+            // Loop through the records and create table rows
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    const record = data[key];
+                    tableHTML += `
+                        <tr>
+                            <td>${record.Name}</td>
+                            <td>${record.people}</td>
+                            <td>${record.times}</td>
+                            <td>${record.talk}</td>
+                            <td>${record.line}</td>
+                            <td class="highlight">${record.CreateDatetime}</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+
+            return tableHTML;
         }
 
         // Fetch data using HTTP GET
@@ -160,17 +168,11 @@
                 const data = await response.json();
         
                 // 檢查返回的資料，並將其顯示到頁面上
-                for (const key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        const record = data[key];
-                        const recordHTML = displayRecord(record);
-                        displayDiv.innerHTML += recordHTML; // 動態加入每一筆資料
-                    }
-                }
-        
-                // 若無資料，顯示查無資料的訊息
                 if (Object.keys(data).length === 0) {
                     displayDiv.innerHTML = "<p>查無資料。</p>";
+                } else {
+                    const tableHTML = displayTable(data);
+                    displayDiv.innerHTML = tableHTML; // 顯示表格
                 }
             } catch (error) {
                 console.error("Error fetching data:", error);
