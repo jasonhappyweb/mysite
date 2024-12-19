@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ragic Data Insert</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.1rem;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+    <a href="Index.html">
+        <button id="insertBtn">回到查詢頁面</button>
+    </a>
+        <h1>新增資料</h1>
+        <div class="form-group">
+            <label for="name">名稱</label>
+            <input type="text" id="name" placeholder="請輸入名稱">
+        </div>
+        <div class="form-group">
+            <label for="people">人數</label>
+            <input type="number" id="people" placeholder="請輸入人數">
+        </div>
+        <div class="form-group">
+            <label for="times">次數</label>
+            <input type="number" id="times" placeholder="請輸入次數">
+        </div>
+        <div class="form-group">
+            <label for="talk">交談次數</label>
+            <input type="number" id="talk" placeholder="請輸入交談次數">
+        </div>
+        <div class="form-group">
+            <label for="line">Line</label>
+            <input type="number" id="line" placeholder="請輸入行數">
+        </div>
+        <button id="submitBtn">新增</button>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        const baseUrl = "https://ap13.ragic.com/OCHDB/ragicsales-order-management/1";
+        const apiKey = "dkRKQnBSWCtMZjdja0pnYW5DUFBXZjZMbXNOR3NwYkFkSmI2UStQR2ZEWStxRU5KQ1FHOEQybGFERWFLWUpOVQ=";
+
+        // 主函數 - 插入資料
+        async function insertData() {
+            // 獲取輸入框的值
+            const name = document.getElementById("name").value.trim();
+            const people = document.getElementById("people").value.trim();
+            const times = document.getElementById("times").value.trim();
+            const talk = document.getElementById("talk").value.trim();
+            const line = document.getElementById("line").value.trim();
+            const messageDiv = document.getElementById("message");
+            const datetime = new Date();
+            const year = datetime.getFullYear();
+            const month = String(datetime.getMonth() + 1).padStart(2, '0');  // 月份從 0 開始，所以要加 1
+            const day = String(datetime.getDate()).padStart(2, '0');
+            const hours = String(datetime.getHours()).padStart(2, '0');
+            const minutes = String(datetime.getMinutes()).padStart(2, '0');
+            const seconds = String(datetime.getSeconds()).padStart(2, '0');
+            
+            // 組合成 'YYYY年MM月DD日 HH:MM:SS' 格式
+            const formattedDatetime = `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
+            
+            // 驗證輸入
+            if (!name || !people || !times || !talk || !line) {
+                messageDiv.textContent = "請填寫所有欄位！";
+                messageDiv.style.color = "red";
+                return;
+            }
+
+            // 將資料組合成 JSON
+            const payload = {
+                "1000001": name,
+                "1000002": people,
+                "1000003": times,
+                "1000004": talk,
+                "1000005": line,
+                "1000007":formattedDatetime
+            };
+
+            try {
+                // 調用 ajaxPost 函數並將 payload 傳遞給它
+                ajaxPost(payload);
+            } catch (error) {
+                console.error("Error inserting data:", error);
+                messageDiv.textContent = "資料新增失敗，請檢查錯誤日誌。";
+                messageDiv.style.color = "red";
+            }
+        }
+
+        // 使用 XMLHttpRequest 發送 POST 請求
+        function ajaxPost(payload) {
+            const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+            const apiUrl = "https://ap13.ragic.com/OCHDB/ragicsales-order-management/1";
+            const apiKey = "dkRKQnBSWCtMZjdja0pnYW5DUFBXZjZMbXNOR3NwYkFkSmI2UStQR2ZEWStxRU5KQ1FHOEQybGFERWFLWUpOVQ=";
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", `${proxyUrl}${apiUrl}?APIKey=${apiKey}&api`, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            // 定義請求完成後的處理邏輯
+            xhr.onload = function() {
+                const messageDiv = document.getElementById("message");
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    console.log("資料新增成功！", xhr.responseText);
+                    messageDiv.textContent = "資料新增成功！";
+                    messageDiv.style.color = "green";
+                } else {
+                    console.error("資料新增失敗", xhr.status, xhr.statusText);
+                    messageDiv.textContent = "資料新增失敗，請檢查錯誤日誌。";
+                    messageDiv.style.color = "red";
+                }
+            };
+
+            // 定義請求錯誤的處理邏輯
+            xhr.onerror = function() {
+                console.error("請求發生錯誤");
+                const messageDiv = document.getElementById("message");
+                messageDiv.textContent = "資料新增失敗，請檢查錯誤日誌。";
+                messageDiv.style.color = "red";
+            };
+
+            // 發送 POST 請求
+            xhr.send(JSON.stringify(payload));
+        }
+
+        // 綁定按鈕事件
+        document.getElementById("submitBtn").addEventListener("click", insertData);
+    </script>
+</body>
+</html>
