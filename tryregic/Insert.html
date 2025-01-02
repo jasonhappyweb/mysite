@@ -112,8 +112,8 @@
             const minutes = String(datetime.getMinutes()).padStart(2, '0');
             const seconds = String(datetime.getSeconds()).padStart(2, '0');
             
-            // 組合成 'YYYY年MM月DD日 HH:MM:SS' 格式
-            const formattedDatetime = `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
+            // 組合成 'YYYY/MM/DD HH:MM' 格式
+const formattedDatetime = `${year}/${month}/${day} ${hours}:${minutes}`;
             
             // 驗證輸入
             if (!name || !people || !times || !talk || !line) {
