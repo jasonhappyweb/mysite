@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'RegicRead.dart'; // 导入 InsertDataPage 页面
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(InsertData());
@@ -18,6 +19,17 @@ class InsertData extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: InsertDataPage(),
+      locale: Locale('zh', 'CN'), // 設定為中文（簡體）或 Locale('zh', 'TW') 為繁體
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', 'US'), // 英文
+        const Locale('zh', 'CN'), // 中文（簡體）
+        const Locale('zh', 'TW'), // 中文（繁體）
+      ],
     );
   }
 }
@@ -28,13 +40,21 @@ class InsertDataPage extends StatefulWidget {
 }
 
 class _InsertDataPageState extends State<InsertDataPage> {
+  @override
+  void initState() {
+    super.initState();
+    // 設定預設日期為當前日期
+    final DateTime now = DateTime.now();
+    dateController.text = "${now.year.toString().padLeft(4, '0')}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}";
+  }
   // 定義輸入控制器
   final TextEditingController nameController = TextEditingController();
   final TextEditingController peopleController = TextEditingController(text: "0");
   final TextEditingController timesController = TextEditingController(text: "0");
   final TextEditingController talkController = TextEditingController(text: "0");
   final TextEditingController lineController = TextEditingController(text: "0");
-
+  // 定義選擇時間的控制器
+  final TextEditingController dateController = TextEditingController();
   // 狀態提示訊息
   String message = '';
   Color messageColor = Colors.black;
@@ -47,6 +67,23 @@ class _InsertDataPageState extends State<InsertDataPage> {
 
   // 用於顯示 loading 層的狀態
   bool isLoading = false;
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      locale: const Locale('zh', 'TW'), // 如果需要指定中文，這裡可以強制設置
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        dateController.text = "${pickedDate.year}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.day.toString().padLeft(2, '0')}";
+        print(dateController.text);
+      });
+    }
+  }
 
   // 發送數據的函數
   Future<void> insertData() async {
@@ -65,10 +102,18 @@ class _InsertDataPageState extends State<InsertDataPage> {
 
     // 獲取當前日期和時間，並將其格式化為 yyyy/MM/dd HH:mm 形式
     final DateTime now = DateTime.now();
+    final String today = "${now.year.toString().padLeft(4, '0')}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}";
     final String formattedDatetime =
         "${now.year.toString().padLeft(4, '0')}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')} "
         "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
-
+// 判断 dateController.text 是否等于今天的日期
+    if (dateController.text == today) {
+      // 如果是今天，设置为日期和时间
+      dateController.text = formattedDatetime;
+    } else {
+      // 如果不是今天，追加当前时间
+      dateController.text = "${dateController.text} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
+    }
     // 準備請求的 payload
     final Map<String, dynamic> payload = {
       "1000001": nameController.text.trim(),
@@ -76,7 +121,7 @@ class _InsertDataPageState extends State<InsertDataPage> {
       "1000003": timesController.text.trim(),
       "1000004": talkController.text.trim(),
       "1000005": lineController.text.trim(),
-      "1000007": formattedDatetime,  // 使用格式化後的日期字串
+      "1000007": dateController.text.trim(),  // 使用格式化後的日期字串
     };
 
     // 顯示 loading 層
@@ -236,6 +281,26 @@ class _InsertDataPageState extends State<InsertDataPage> {
                   _buildNumberInputField("交談次數", talkController),
                   SizedBox(height: 16), // 增加间距
                   _buildNumberInputField("Line", lineController),
+                  SizedBox(height: 16),
+// 增加日期選擇器的輸入框
+                  TextField(
+                    controller: dateController,
+                    readOnly: true, // 設定為唯讀
+                    onTap: () => _selectDate(context), // 點擊時觸發日期選擇器
+                    decoration: InputDecoration(
+                      labelText: "選擇日期",
+                      labelStyle: TextStyle(color: Colors.blue),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.blue, width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.blue, width: 2),
+                      ),
+                    ),
+                    style: TextStyle(fontSize: 16),
+                  ),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _showConfirmationDialog, // 顯示確認對話框

@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Regic.dart'; // 导入 InsertDataPage 页面
-
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:isarapp/main.dart';
 void main() {
-  runApp(const ReadData());
+  runApp(const ReadData(),);
+
 }
 
 class ReadData extends StatelessWidget {
@@ -13,6 +15,16 @@ class ReadData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('zh', 'CN'), // 简体中文
+        Locale('zh', 'TW'), // 繁体中文
+      ],
+      locale: const Locale('zh', 'CN'), // 设置默认语言为简体中文
       title: 'Ragic Data Viewer',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -36,7 +48,7 @@ class _DataViewerState extends State<DataViewer> {
   List<Map<String, dynamic>> _fetchedData = [];
   bool _isLoading = false;
 
-  // 統計數據
+  // 统计数据
   int totalPeople = 0;
   int totalTimes = 0;
   int totalTalk = 0;
@@ -54,12 +66,11 @@ class _DataViewerState extends State<DataViewer> {
     _endDate = DateTime.now();
   }
 
-
   Future<void> _fetchData() async {
     setState(() {
       _isLoading = true;
       _fetchedData = [];
-      // 重置統計數據
+      // 重置统计数据
       totalPeople = 0;
       totalTimes = 0;
       totalTalk = 0;
@@ -69,23 +80,20 @@ class _DataViewerState extends State<DataViewer> {
     final String name = _nameController.text.trim();
     String url = "$baseUrl?V=1&APIKey=$apiKey&api";
 
-    // 添加姓名條件
+    // 添加姓名条件
     if (name.isNotEmpty) {
-      url += "&where=1000001,eq,$name";
+      url += "&where=1000001,like,$name";
     }
 
-    // 添加日期範圍條件
-   if (_startDate != null && _endDate != null && _startDate != _endDate) {
-      print("${_startDate} + ${_endDate}");
+    // 添加日期范围条件
+    if (_startDate != null && _endDate != null) {
       String startFormattedDate = "${_startDate!.year}/${_startDate!.month.toString().padLeft(2, '0')}/${_startDate!.day.toString().padLeft(2, '0')}";
       String endFormattedDate = "${_endDate!.year}/${_endDate!.month.toString().padLeft(2, '0')}/${_endDate!.day.toString().padLeft(2, '0')}";
-      // 使用 LIKE 進行模糊查詢，添加 '%' 來進行匹配
       if(startFormattedDate == endFormattedDate){
-        String startFormattedDate = "${_startDate!.year}/${_startDate!.month.toString().padLeft(2, '0')}/${_startDate!.day.toString().padLeft(2, '0')}";
         url += "&where=1000007,like,$startFormattedDate";
       }
       else{
-        url += "&where=1000007,gt,${startFormattedDate} 00:00&where=1000007,lt,${endFormattedDate}11:59";
+        url += "&where=1000007,gt,${startFormattedDate} 00:00&where=1000007,lt,${endFormattedDate} 23:59";
       }
     }
     print("Fetching data from URL: $url");
@@ -98,11 +106,8 @@ class _DataViewerState extends State<DataViewer> {
       if (response.statusCode == 200) {
         try {
           final Map<String, dynamic> jsonData = json.decode(response.body);
-          print("Parsed JSON data: $jsonData");
-
           setState(() {
             _fetchedData = jsonData.values.map((data) {
-              // 進行數據映射
               totalPeople += int.tryParse(data["people"]?.toString() ?? "0") ?? 0;
               totalTimes += int.tryParse(data["times"]?.toString() ?? "0") ?? 0;
               totalTalk += int.tryParse(data["talk"]?.toString() ?? "0") ?? 0;
@@ -118,8 +123,6 @@ class _DataViewerState extends State<DataViewer> {
               };
             }).toList();
           });
-
-          print("Fetched and processed data: $_fetchedData");
         } catch (e) {
           print("Error parsing JSON: $e");
           _showError("資料解析失敗，請檢查返回的數據格式。");
@@ -190,6 +193,7 @@ class _DataViewerState extends State<DataViewer> {
       initialDate: _startDate ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
+      locale: const Locale('zh', 'TW'), // 如果需要指定中文，這裡可以強制設置
     );
     if (picked != null && picked != _startDate)
       setState(() {
@@ -203,6 +207,7 @@ class _DataViewerState extends State<DataViewer> {
       initialDate: _endDate ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
+      locale: const Locale('zh', 'TW'), // 如果需要指定中文，這裡可以強制設置
     );
     if (picked != null && picked != _endDate)
       setState(() {
@@ -228,26 +233,53 @@ class _DataViewerState extends State<DataViewer> {
               ),
             ),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () => _selectStartDate(context),
-                  child: Text(
-                    _startDate == null
-                        ? '選擇起始日期'
-                        : '${_startDate!.year}-${_startDate!.month}-${_startDate!.day}',
+            // 日期选择部分美化
+            Container(
+              padding: const EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50, // 背景颜色
+                border: Border.all(color: Colors.blue, width: 2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => _selectStartDate(context),
+                      child: Text(
+                        _startDate == null
+                            ? '選擇起始日期'
+                            : '${_startDate!.year}-${_startDate!.month}-${_startDate!.day}',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16, // 增大字体
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                TextButton(
-                  onPressed: () => _selectEndDate(context),
-                  child: Text(
-                    _endDate == null
-                        ? '選擇結束日期'
-                        : '${_endDate!.year}-${_endDate!.month}-${_endDate!.day}',
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      "~",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => _selectEndDate(context),
+                      child: Text(
+                        _endDate == null
+                            ? '選擇結束日期'
+                            : '${_endDate!.year}-${_endDate!.month}-${_endDate!.day}',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16, // 增大字体
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
             Row(
@@ -266,6 +298,16 @@ class _DataViewerState extends State<DataViewer> {
                     );
                   },
                   child: const Text("新增資料"),
+                ),
+                const SizedBox(width: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyApp()),
+                    );
+                  },
+                  child: const Text("返回"),
                 ),
               ],
             ),
@@ -296,3 +338,4 @@ class _DataViewerState extends State<DataViewer> {
     );
   }
 }
+

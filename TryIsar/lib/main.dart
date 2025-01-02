@@ -88,79 +88,94 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         backgroundColor: Colors.green[600],
       ),
-      body: Center(  // Center to align Column's elements
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, // Vertically center the widgets
-            crossAxisAlignment: CrossAxisAlignment.center, // Horizontally center the widgets
-            children: <Widget>[
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ReadData()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange[600], // Background color
-                  padding: EdgeInsets.symmetric(vertical: 18, horizontal: 32),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20), // Rounded corners
-                  ),
-                  elevation: 5, // Shadow effect
-                ),
-                child: Text(
-                  '讀取福音紀錄',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
+      body: Stack(  // Stack to layer the background and the buttons
+        children: [
+          // Background Image with Opacity
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.7,  // Set the opacity to make the image transparent
+              child: Image.network(
+                'https://jasonhappyweb.github.io/mysite/%E8%BD%89%E7%9B%A4%E9%81%8A%E6%88%B2/LINE_ALBUM_1130715_240729_1.jpg', // Background image
+                fit: BoxFit.cover,  // Cover the entire screen
               ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => InsertData()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange[600],
-                  padding: EdgeInsets.symmetric(vertical: 18, horizontal: 32),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  elevation: 5,
-                ),
-                child: Text(
-                  '新增福音紀錄',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ReadBest()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange[600],
-                  padding: EdgeInsets.symmetric(vertical: 18, horizontal: 32),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  elevation: 5,
-                ),
-                child: Text(
-                  '傳到王',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          // Foreground widgets (buttons)
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,  // Vertically center the widgets
+                crossAxisAlignment: CrossAxisAlignment.center,  // Horizontally center the widgets
+                children: <Widget>[
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ReadData()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange[600],  // Background color
+                      padding: EdgeInsets.symmetric(vertical: 18, horizontal: 32),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),  // Rounded corners
+                      ),
+                      elevation: 5,  // Shadow effect
+                    ),
+                    child: Text(
+                      '讀取福音紀錄',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => InsertData()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange[600],
+                      padding: EdgeInsets.symmetric(vertical: 18, horizontal: 32),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 5,
+                    ),
+                    child: Text(
+                      '新增福音紀錄',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ReadBest()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange[600],
+                      padding: EdgeInsets.symmetric(vertical: 18, horizontal: 32),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 5,
+                    ),
+                    child: Text(
+                      '傳到王',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
       backgroundColor: Colors.green[50], // Subtle green background for the app
     );
