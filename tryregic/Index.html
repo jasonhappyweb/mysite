@@ -49,17 +49,22 @@
             background-color: #f7faff;
             border: 1px solid #ddd;
             border-radius: 12px;
-            overflow-x: auto;
+            max-height: 400px; /* Limit the height of the data container */
+            overflow-y: auto; /* Allow vertical scrolling */
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            table-layout: fixed; /* Make table columns fixed */
         }
         th, td {
             padding: 15px;
             text-align: left;
             border: 1px solid #ddd;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         th {
             background-color: #007BFF;
@@ -98,6 +103,15 @@
         a {
             text-decoration: none;
         }
+        .total-row {
+            margin-top: 20px;
+            text-align: right;
+            font-weight: bold;
+            background-color: #f1f8ff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -119,6 +133,9 @@
         <div class="data-display" id="dataDisplay">
             <!-- Data will be displayed as a table -->
         </div>
+        <div id="totalRow" class="total-row">
+            <!-- Total will be displayed here -->
+        </div>
     </div>
 
     <script>
@@ -127,7 +144,11 @@
 
         // Function to display data as a table
         function displayTable(data) {
-            let tableHTML = `
+            let totalPeople = 0;
+            let totalTimes = 0;
+            let totalTalks = 0;  // For numeric summation of Talk
+            let totalLines = 0;  // For numeric summation of Line
+            let tableHTML = ` 
                 <table>
                     <thead>
                         <tr>
@@ -146,7 +167,11 @@
             for (const key in data) {
                 if (data.hasOwnProperty(key)) {
                     const record = data[key];
-                    tableHTML += `
+                    totalPeople += parseInt(record.people) || 0;
+                    totalTimes += parseInt(record.times) || 0;
+                    totalTalks += parseInt(record.talk) || 0;  // Add to totalTalks
+                    totalLines += parseInt(record.line) || 0;  // Add to totalLines
+                    tableHTML += ` 
                         <tr>
                             <td>${record.Name}</td>
                             <td>${record.people}</td>
@@ -163,6 +188,14 @@
             return tableHTML;
         }
 
+        // Function to display total row
+        function displayTotal(totalPeople, totalTimes, totalTalks, totalLines) {
+            const totalRow = document.getElementById("totalRow");
+            totalRow.innerHTML = `
+                <span>總計：人數 ${totalPeople} 次數 ${totalTimes} 對話 ${totalTalks} Line ${totalLines}</span>
+            `;
+        }
+
         // Fetch data using HTTP GET
         async function fetchData() {
             const name = document.getElementById("nameInput").value.trim();
@@ -175,10 +208,13 @@
             const apiUrl = `${baseUrl}?V=1&APIKey=${apiKey}${searchdata}&api`;
             const displayDiv = document.getElementById("dataDisplay");
             displayDiv.innerHTML = "";
+            const totalRow = document.getElementById("totalRow");
+            totalRow.innerHTML = ""; // Clear total row
 
             try {
                 const response = await fetch(apiUrl);
                 if (!response.ok) {
+                    console(apiUrl);
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
@@ -186,10 +222,29 @@
 
                 if (Object.keys(data).length === 0) {
                     displayDiv.innerHTML = "<p>查無資料。</p>";
-                } else {
-                    const tableHTML = displayTable(data);
-                    displayDiv.innerHTML = tableHTML;
+                    return;
                 }
+
+                const tableHTML = displayTable(data);
+                displayDiv.innerHTML = tableHTML;
+
+                // Calculate totals
+                let totalPeople = 0;
+                let totalTimes = 0;
+                let totalTalks = 0;
+                let totalLines = 0;
+                for (const key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        const record = data[key];
+                        totalPeople += parseInt(record.people) || 0;
+                        totalTimes += parseInt(record.times) || 0;
+                        totalTalks += parseInt(record.talk) || 0;
+                        totalLines += parseInt(record.line) || 0;
+                    }
+                }
+
+                // Display total row outside the table
+                displayTotal(totalPeople, totalTimes, totalTalks, totalLines);
             } catch (error) {
                 console.error("Error fetching data:", error);
                 alert("資料查詢失敗，請檢查錯誤日誌。");
