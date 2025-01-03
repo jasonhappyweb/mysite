@@ -29,7 +29,7 @@
             text-align: center;
             margin-bottom: 25px;
         }
-        input[type="text"] {
+        input[type="text"], input[type="date"] {
             width: 80%;
             padding: 12px;
             font-size: 1rem;
@@ -37,8 +37,9 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             transition: border-color 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
         }
-        input[type="text"]:focus {
+        input[type="text"]:focus, input[type="date"]:focus {
             border-color: #007BFF;
             box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
             outline: none;
@@ -120,6 +121,8 @@
 
         <div class="input-container">
             <input type="text" id="nameInput" placeholder="請輸入姓名">
+            <input type="date" id="dateInput" placeholder="選擇日期">~ 
+            <input type="date" id="dateInput1" placeholder="選擇日期">
         </div>
 
         <div class="button-container">
@@ -141,6 +144,21 @@
     <script>
         const baseUrl = "https://ap13.ragic.com/OCHDB/ragicsales-order-management/1";
         const apiKey = "dkRKQnBSWCtMZjdja0pnYW5DUFBXZjZMbXNOR3NwYkFkSmI2UStQR2ZEWStxRU5KQ1FHOEQybGFERWFLWUpOVQ=";
+
+        // Function to set today's date in the date inputs
+        function setTodaysDate() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = (today.getMonth() + 1).toString().padStart(2, '0'); // Month starts from 0
+            const dd = today.getDate().toString().padStart(2, '0');
+            const formattedDate = `${yyyy}-${mm}-${dd}`;
+
+            document.getElementById("dateInput").value = formattedDate;
+            document.getElementById("dateInput1").value = formattedDate;
+        }
+
+        // Call setTodaysDate when the page loads
+        window.onload = setTodaysDate;
 
         // Function to display data as a table
         function displayTable(data) {
@@ -191,7 +209,7 @@
         // Function to display total row
         function displayTotal(totalPeople, totalTimes, totalTalks, totalLines) {
             const totalRow = document.getElementById("totalRow");
-            totalRow.innerHTML = `
+            totalRow.innerHTML = ` 
                 <span>總計：人數 ${totalPeople} 次數 ${totalTimes} 對話 ${totalTalks} Line ${totalLines}</span>
             `;
         }
@@ -199,12 +217,26 @@
         // Fetch data using HTTP GET
         async function fetchData() {
             const name = document.getElementById("nameInput").value.trim();
+            const date = document.getElementById("dateInput").value.trim();
+            const date1 = document.getElementById("dateInput1").value.trim();
             let searchdata = "";
 
             if (name) {
-                searchdata = `&where=1000001,eq,${encodeURIComponent(name)}`;
+                searchdata = `&where=1000001,like,${encodeURIComponent(name)}`;
             }
 
+            if (date == date1) {
+                // Format the dates to YYYY/MM/DD
+                const formattedStartDate = date.split("-").join("/");
+                const formattedEndDate = date1.split("-").join("/");
+                searchdata += `&where=1000007,like,${encodeURIComponent(formattedStartDate)}`;
+            }
+            else{
+                const formattedStartDate = date.split("-").join("/") + " 00:00";
+                const formattedEndDate = date1.split("-").join("/") + " 11:59";
+                searchdata += `&where=1000007,gt,${encodeURIComponent(formattedStartDate)}`;
+                searchdata += `&where=1000007,lt,${encodeURIComponent(formattedEndDate)}`;
+            }
             const apiUrl = `${baseUrl}?V=1&APIKey=${apiKey}${searchdata}&api`;
             const displayDiv = document.getElementById("dataDisplay");
             displayDiv.innerHTML = "";
@@ -214,7 +246,6 @@
             try {
                 const response = await fetch(apiUrl);
                 if (!response.ok) {
-                    console(apiUrl);
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
