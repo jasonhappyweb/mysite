@@ -57,11 +57,13 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            table-layout: fixed; /* Make table columns fixed */
+            table-layout: fixed; /* 保持列固定 */
+            font-size: 0.85rem; /* 縮小表格的字體大小 */
         }
+        
         th, td {
-            padding: 15px;
-            text-align: left;
+            padding: 10px; /* 調整內邊距以適應小字體 */
+            text-align: center;
             border: 1px solid #ddd;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -130,7 +132,7 @@
         </div>
         <div class="button-container">
             <a href="Insert.html">
-                <button id="insertBtn">新增資料</button>
+                <!--<button id="insertBtn">新增資料</button>-->
             </a>
         </div>
         <div class="data-display" id="dataDisplay">
@@ -171,8 +173,8 @@
                     <thead>
                         <tr>
                             <th>姓名</th>
-                            <th>人數</th>
                             <th>次數</th>
+                            <th>人數</th>
                             <th>對話</th>
                             <th>Line</th>
                             <th>上傳時間</th>
@@ -185,6 +187,9 @@
             for (const key in data) {
                 if (data.hasOwnProperty(key)) {
                     const record = data[key];
+                    const rawDateTime = record.CreateDatetime || "";
+                    const displayformattedDate = rawDateTime.split(" ")[0]; // 提取日期部分（YYYY/MM/DD）
+        
                     totalPeople += parseInt(record.people) || 0;
                     totalTimes += parseInt(record.times) || 0;
                     totalTalks += parseInt(record.talk) || 0;  // Add to totalTalks
@@ -196,7 +201,7 @@
                             <td>${record.times}</td>
                             <td>${record.talk}</td>
                             <td>${record.line}</td>
-                            <td class="highlight">${record.CreateDatetime}</td>
+                            <td class="highlight">${displayformattedDate}</td>
                         </tr>
                     `;
                 }
