@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'Regic.dart'; // 导入 InsertDataPage 页面
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:isarapp/main.dart';
+import 'RegicEdit.dart'; // 导入 InsertDataPage 页面
 void main() {
   runApp(const ReadData(),);
 
@@ -64,6 +65,7 @@ class _DataViewerState extends State<DataViewer> {
     // 设置默认的起始日期和结束日期为今天的日期
     _startDate = DateTime.now();
     _endDate = DateTime.now();
+    _fetchData(); // 刪除後重新載入資料
   }
 
   Future<void> _fetchData() async {
@@ -167,11 +169,12 @@ class _DataViewerState extends State<DataViewer> {
         columnSpacing: 30,   // 列之间的间距，调整为合适的宽度
         columns: const [
           DataColumn(label: Text("姓名")),
-          DataColumn(label: Text("人數")),
           DataColumn(label: Text("次數")),
+          DataColumn(label: Text("人數")),
           DataColumn(label: Text("對話")),
           DataColumn(label: Text("Line")),
           DataColumn(label: Text("上傳時間")),
+          DataColumn(label: Text("操作")),
         ],
         rows: _fetchedData.map((data) {
           return DataRow(cells: [
@@ -181,9 +184,69 @@ class _DataViewerState extends State<DataViewer> {
             DataCell(Text(data["Talk"] ?? "")),
             DataCell(Text(data["Line"] ?? "")),
             DataCell(Text(data["Datetime"] ?? "")),
+            DataCell(
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () => _editData(data), // 處理修改
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () => _deleteData(data["Name"],data["Datetime"]), // 處理刪除
+                  ),
+                ],
+              ),
+            ),
           ]);
         }).toList(),
       ),
+    );
+  }
+
+// 處理修改邏輯
+  Future<void> _editData(Map<String, dynamic> data) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditDataPage(data: data), // 將資料傳遞給編輯頁面
+      ),
+    );
+  }
+
+
+// 處理刪除邏輯
+  Future<void> _deleteData(String Name, String Datetime) async {
+    // 顯示確認刪除的對話框
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("確定刪除"),
+          content: Text("您確定要刪除 $Name 在 $Datetime 上傳的資料嗎？"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // 關閉對話框
+              },
+              child: const Text("取消"),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // 關閉對話框
+                // 執行刪除操作
+                String url = "$baseUrl?V=1&APIKey=$apiKey&api&where=1000001,eq,$Name&where=1000007,eq,$Datetime";
+                final response = await http.delete(Uri.parse(url));
+                print("Deleting data with ID: $Datetime");
+                // 如果刪除成功，您可以在此處顯示一個提示，或者重新載入資料
+                _showError("資料刪除成功！");
+                _fetchData(); // 刪除後重新載入資料
+              },
+              child: const Text("確定"),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -326,8 +389,8 @@ class _DataViewerState extends State<DataViewer> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text("總計："),
-                Text("人數: $totalPeople"),
-                Text("次數: $totalTimes"),
+                Text("次數: $totalPeople"),
+                Text("人數: $totalTimes"),
                 Text("對話: $totalTalk"),
                 Text("Line: $totalLine"),
               ],

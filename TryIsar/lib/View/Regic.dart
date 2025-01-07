@@ -274,9 +274,9 @@ class _InsertDataPageState extends State<InsertDataPage> {
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(height: 16), // 增加间距
-                  _buildNumberInputField("人數", peopleController),
+                  _buildNumberInputField("次數", peopleController),
                   SizedBox(height: 16), // 增加间距
-                  _buildNumberInputField("次數", timesController),
+                  _buildNumberInputField("人數", timesController),
                   SizedBox(height: 16), // 增加间距
                   _buildNumberInputField("交談次數", talkController),
                   SizedBox(height: 16), // 增加间距
