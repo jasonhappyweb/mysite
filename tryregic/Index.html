@@ -31,8 +31,8 @@
         }
         input[type="text"], input[type="date"] {
             width: 80%;
-            padding: 12px;
-            font-size: 1rem;
+            padding: 18px;
+            font-size: 1.2rem;  /* 增大字體 */
             border: 1px solid #ccc;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -114,6 +114,23 @@
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 8px;
+        }
+        input[type="date"] {
+            width: 40%; /* 增大日期選擇框 */
+            padding: 14px; /* 增大內邊距 */
+            text-align: center;
+            font-size: 1.2rem; /* 使文字大小更大 */
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        
+        input[type="date"]:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+            outline: none;
         }
     </style>
 </head>
