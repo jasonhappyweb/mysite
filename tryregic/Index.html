@@ -130,14 +130,7 @@
         <div class="button-container">
             <button id="fetchBtn">查詢</button>
         </div>
-        <div class="button-container">
-            <a href="Insert.html">
-                <!--<button id="insertBtn">新增資料</button>-->
-            </a>
-        </div>
-        <div class="button-container">
-            <button id="fetchNamesBtn">顯示所有人名</button>
-        </div>
+
         <div class="data-display" id="dataDisplay">
             <!-- Data will be displayed as a table -->
         </div>
@@ -146,7 +139,8 @@
         </div>
 
         <div class="data-display" id="nameDisplay">
-            <!-- All names will be displayed here -->
+            
+            <!-- 所有人名將在這裡顯示 -->
         </div>
     </div>
 
@@ -154,28 +148,26 @@
         const baseUrl = "https://ap13.ragic.com/OCHDB/ragicsales-order-management/1";
         const apiKey = "dkRKQnBSWCtMZjdja0pnYW5DUFBXZjZMbXNOR3NwYkFkSmI2UStQR2ZEWStxRU5KQ1FHOEQybGFERWFLWUpOVQ=";
 
-        // Function to set today's date in the date inputs
+        // 設定今日日期
         function setTodaysDate() {
             const today = new Date();
             const yyyy = today.getFullYear();
-            const mm = (today.getMonth() + 1).toString().padStart(2, '0'); // Month starts from 0
+            const mm = (today.getMonth() + 1).toString().padStart(2, '0');
             const dd = today.getDate().toString().padStart(2, '0');
             const formattedDate = `${yyyy}-${mm}-${dd}`;
 
             document.getElementById("dateInput").value = formattedDate;
             document.getElementById("dateInput1").value = formattedDate;
         }
-
-        // Call setTodaysDate when the page loads
         window.onload = setTodaysDate;
 
-        // Function to display data as a table
+        // 顯示查詢結果的表格
         function displayTable(data) {
             let totalPeople = 0;
             let totalTimes = 0;
-            let totalTalks = 0;  // For numeric summation of Talk
-            let totalLines = 0;  // For numeric summation of Line
-            let tableHTML = ` 
+            let totalTalks = 0;
+            let totalLines = 0;
+            let tableHTML = `
                 <table>
                     <thead>
                         <tr>
@@ -190,18 +182,18 @@
                     <tbody>
             `;
 
-            // Loop through the records and create table rows
             for (const key in data) {
                 if (data.hasOwnProperty(key)) {
                     const record = data[key];
                     const rawDateTime = record.CreateDatetime || "";
-                    const displayformattedDate = rawDateTime.split(" ")[0]; // 提取日期部分（YYYY/MM/DD）
-        
+                    const displayformattedDate = rawDateTime.split(" ")[0];
+
                     totalPeople += parseInt(record.people) || 0;
                     totalTimes += parseInt(record.times) || 0;
-                    totalTalks += parseInt(record.talk) || 0;  // Add to totalTalks
-                    totalLines += parseInt(record.line) || 0;  // Add to totalLines
-                    tableHTML += ` 
+                    totalTalks += parseInt(record.talk) || 0;
+                    totalLines += parseInt(record.line) || 0;
+
+                    tableHTML += `
                         <tr>
                             <td>${record.Name}</td>
                             <td>${record.people}</td>
@@ -218,64 +210,62 @@
             return tableHTML;
         }
 
-        // Function to display total row
+        // 顯示總計
         function displayTotal(totalPeople, totalTimes, totalTalks, totalLines) {
             const totalRow = document.getElementById("totalRow");
-            totalRow.innerHTML = ` 
+            totalRow.innerHTML = `
                 <span>總計：次數 ${totalPeople} 人數 ${totalTimes} 對話 ${totalTalks} Line ${totalLines}</span>
             `;
         }
 
-        // Fetch data using HTTP GET
         async function fetchData() {
             const name = document.getElementById("nameInput").value.trim();
             const date = document.getElementById("dateInput").value.trim();
             const date1 = document.getElementById("dateInput1").value.trim();
             let searchdata = "";
-
+        
             if (name) {
                 searchdata = `&where=1000001,like,${encodeURIComponent(name)}`;
             }
-
-            if (date == date1) {
-                // Format the dates to YYYY/MM/DD
+        
+            if (date === date1) {
                 const formattedStartDate = date.split("-").join("/");
-                const formattedEndDate = date1.split("-").join("/");
                 searchdata += `&where=1000007,like,${encodeURIComponent(formattedStartDate)}`;
-            }
-            else{
+            } else {
                 const formattedStartDate = date.split("-").join("/") + " 00:00";
                 const formattedEndDate = date1.split("-").join("/") + " 11:59";
                 searchdata += `&where=1000007,gt,${encodeURIComponent(formattedStartDate)}`;
                 searchdata += `&where=1000007,lt,${encodeURIComponent(formattedEndDate)}`;
             }
+        
             const apiUrl = `${baseUrl}?V=1&APIKey=${apiKey}${searchdata}&api`;
             const displayDiv = document.getElementById("dataDisplay");
             displayDiv.innerHTML = "";
             const totalRow = document.getElementById("totalRow");
-            totalRow.innerHTML = ""; // Clear total row
-
+            totalRow.innerHTML = "";
+        
             try {
                 const response = await fetch(apiUrl);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-
+        
                 const data = await response.json();
-
+        
                 if (Object.keys(data).length === 0) {
                     displayDiv.innerHTML = "<p>查無資料。</p>";
                     return;
                 }
-
+        
                 const tableHTML = displayTable(data);
                 displayDiv.innerHTML = tableHTML;
-
-                // Calculate totals
+        
+                // 計算總計
                 let totalPeople = 0;
                 let totalTimes = 0;
                 let totalTalks = 0;
                 let totalLines = 0;
+                const names = [];
                 for (const key in data) {
                     if (data.hasOwnProperty(key)) {
                         const record = data[key];
@@ -283,63 +273,31 @@
                         totalTimes += parseInt(record.times) || 0;
                         totalTalks += parseInt(record.talk) || 0;
                         totalLines += parseInt(record.line) || 0;
+        
+                        // 提取名稱並格式化
+                        if (record.Name) {
+                            const formattedName = record.Name
+                                .trim()
+                                .replace(/(.{2})/g, "$1 "); // 每兩個字後插入空格
+                            names.push(formattedName.trim());
+                        }
                     }
                 }
-
-                // Display total row outside the table
+        
                 displayTotal(totalPeople, totalTimes, totalTalks, totalLines);
+        
+                // 顯示名稱
+                const nameDisplay = document.getElementById("nameDisplay");
+                nameDisplay.innerHTML = `
+                    <div style="text-align: center; font-weight: bold; font-size: 1.2rem; margin-bottom: 10px; color: red;">
+                       以下是給牧師複製到PPT用的<br>
+                    </div>
+                    ` + (names.length > 0 ? names.join("<br>") : "<p>未找到任何人名。</p>");
             } catch (error) {
                 console.error("Error fetching data:", error);
                 alert("資料查詢失敗，請檢查錯誤日誌。");
             }
         }
-
-        async function fetchAllNames() {
-
-            let searchdata = "";
-            const date = document.getElementById("dateInput").value.trim();
-            const date1 = document.getElementById("dateInput1").value.trim();
-            if (name) {
-                searchdata = `&where=1000001,like,${encodeURIComponent(name)}`;
-            }
-
-            if (date == date1) {
-                // Format the dates to YYYY/MM/DD
-                const formattedStartDate = date.split("-").join("/");
-                const formattedEndDate = date1.split("-").join("/");
-                searchdata += `&where=1000007,like,${encodeURIComponent(formattedStartDate)}`;
-            }
-            else{
-                const formattedStartDate = date.split("-").join("/") + " 00:00";
-                const formattedEndDate = date1.split("-").join("/") + " 11:59";
-                searchdata += `&where=1000007,gt,${encodeURIComponent(formattedStartDate)}`;
-                searchdata += `&where=1000007,lt,${encodeURIComponent(formattedEndDate)}`;
-            }
-            const apiUrl = `${baseUrl}?V=1&APIKey=${apiKey}${searchdata}&api`;
-            try {
-                const response = await fetch(apiUrl);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                const names = [];
-                for (const key in data) {
-                    if (data.hasOwnProperty(key) && data[key].Name) {
-                        names.push(data[key].Name.trim());
-                    }
-                }
-
-                if (names.length > 0) {
-                    document.getElementById("nameDisplay").innerHTML = names.join("<br>");
-                } else {
-                    document.getElementById("nameDisplay").innerHTML = "<p>未找到任何人名。</p>";
-                }
-            } catch (error) {
-                console.error("Error fetching names:", error);
-            }
-        }
-        document.getElementById("fetchNamesBtn").addEventListener("click", fetchAllNames);
         document.getElementById("fetchBtn").addEventListener("click", fetchData);
     </script>
 </body>
