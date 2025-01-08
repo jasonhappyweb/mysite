@@ -135,11 +135,18 @@
                 <!--<button id="insertBtn">新增資料</button>-->
             </a>
         </div>
+        <div class="button-container">
+            <button id="fetchNamesBtn">顯示所有人名</button>
+        </div>
         <div class="data-display" id="dataDisplay">
             <!-- Data will be displayed as a table -->
         </div>
         <div id="totalRow" class="total-row">
             <!-- Total will be displayed here -->
+        </div>
+
+        <div class="data-display" id="nameDisplay">
+            <!-- All names will be displayed here -->
         </div>
     </div>
 
@@ -287,6 +294,52 @@
             }
         }
 
+        async function fetchAllNames() {
+
+            let searchdata = "";
+            const date = document.getElementById("dateInput").value.trim();
+            const date1 = document.getElementById("dateInput1").value.trim();
+            if (name) {
+                searchdata = `&where=1000001,like,${encodeURIComponent(name)}`;
+            }
+
+            if (date == date1) {
+                // Format the dates to YYYY/MM/DD
+                const formattedStartDate = date.split("-").join("/");
+                const formattedEndDate = date1.split("-").join("/");
+                searchdata += `&where=1000007,like,${encodeURIComponent(formattedStartDate)}`;
+            }
+            else{
+                const formattedStartDate = date.split("-").join("/") + " 00:00";
+                const formattedEndDate = date1.split("-").join("/") + " 11:59";
+                searchdata += `&where=1000007,gt,${encodeURIComponent(formattedStartDate)}`;
+                searchdata += `&where=1000007,lt,${encodeURIComponent(formattedEndDate)}`;
+            }
+            const apiUrl = `${baseUrl}?V=1&APIKey=${apiKey}${searchdata}&api`;
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const names = [];
+                for (const key in data) {
+                    if (data.hasOwnProperty(key) && data[key].Name) {
+                        names.push(data[key].Name.trim());
+                    }
+                }
+
+                if (names.length > 0) {
+                    document.getElementById("nameDisplay").innerHTML = names.join("<br>");
+                } else {
+                    document.getElementById("nameDisplay").innerHTML = "<p>未找到任何人名。</p>";
+                }
+            } catch (error) {
+                console.error("Error fetching names:", error);
+            }
+        }
+        document.getElementById("fetchNamesBtn").addEventListener("click", fetchAllNames);
         document.getElementById("fetchBtn").addEventListener("click", fetchData);
     </script>
 </body>
