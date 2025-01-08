@@ -265,7 +265,8 @@
                 let totalTimes = 0;
                 let totalTalks = 0;
                 let totalLines = 0;
-                const names = [];
+                const namesSet = new Set();  // 使用Set來存儲唯一姓名
+        
                 for (const key in data) {
                     if (data.hasOwnProperty(key)) {
                         const record = data[key];
@@ -274,31 +275,36 @@
                         totalTalks += parseInt(record.talk) || 0;
                         totalLines += parseInt(record.line) || 0;
         
-                        // 提取名稱並格式化
+                        // 提取名稱並分割每兩個字為一個名字，用來計算參與人數
                         if (record.Name) {
-                            const formattedName = record.Name
-                                .trim()
-                                .replace(/(.{2})/g, "$1 "); // 每兩個字後插入空格
-                            names.push(formattedName.trim());
+                            const nameParts = record.Name.trim().match(/.{1,2}/g); // 每兩個字分開
+                            if (nameParts) {
+                                nameParts.forEach(part => namesSet.add(part)); // 將每兩個字加入Set中，保證唯一性
+                            }
                         }
                     }
                 }
         
                 displayTotal(totalPeople, totalTimes, totalTalks, totalLines);
         
-                // 顯示名稱
+                // 顯示名稱和參與人數（顯示原始姓名）
                 const nameDisplay = document.getElementById("nameDisplay");
                 nameDisplay.innerHTML = `
                     <div style="text-align: center; font-weight: bold; font-size: 1.2rem; margin-bottom: 10px; color: red;">
                        以下是給牧師複製到PPT用的<br>
                     </div>
-                    ` + (names.length > 0 ? names.join("<br>") : "<p>未找到任何人名。</p>");
+                         <div style="text-align: center; font-weight: bold; font-size: 1.2rem; margin-bottom: 10px; color: green;">
+                    參與人數: ${namesSet.size} <br><br>
+                       </div>
+                    ${Object.values(data).map(record => record.Name).join("<br>")}
+                `;
             } catch (error) {
                 console.error("Error fetching data:", error);
                 alert("資料查詢失敗，請檢查錯誤日誌。");
             }
         }
-        document.getElementById("fetchBtn").addEventListener("click", fetchData);
+        
+         document.getElementById("fetchBtn").addEventListener("click", fetchData);
     </script>
 </body>
 </html>
