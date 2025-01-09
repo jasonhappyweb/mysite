@@ -439,16 +439,13 @@
         document.getElementById("line-dec").addEventListener("click", function () {
             changeValue("line", -1);
         });
-            // 禁用縮放功能
-    document.addEventListener('touchstart', function(e) {
-        if (e.touches.length > 1) {
-            e.preventDefault();
-        }
-    });
-
-    document.addEventListener('gesturestart', function(e) {
-        e.preventDefault();
-    });
+      // 禁止雙擊縮放
+      document.addEventListener("dblclick", function(e) {
+         e.preventDefault(); // 禁止雙擊事件觸發縮放
+      }, false);
+    //document.addEventListener('gesturestart', function(e) {
+    //    e.preventDefault();
+    //});
     </script>
 </body>
 </html>
