@@ -446,6 +446,12 @@
     //document.addEventListener('gesturestart', function(e) {
     //    e.preventDefault();
     //});
+    document.addEventListener("touchstart", function(event) {
+        // 如果點擊的不是 input 輸入框，則防止觸發鍵盤
+        if (!event.target.closest('input')) {
+            event.preventDefault();
+        }
+    });
     </script>
 </body>
 </html>
