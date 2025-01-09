@@ -5,32 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>新增福音紀錄</title>
     <style>
+           /* 背景漸變和動態效果 */
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(45deg, #6a11cb, #2575fc, #ff007f);
+        background-size: 400% 400%;
+        animation: gradientAnimation 15s ease infinite;
+        margin: 0;
+        padding: 0;
+        color: #fff;
+    }
+
+    @keyframes gradientAnimation {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* 按鈕漸變顏色和動畫 */
+    button {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.3rem;
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    button:hover {
+        background: linear-gradient(135deg, #2575fc, #6a11cb);
+        transform: scale(1.05);
+    }
+
+    /* 輸入框焦點效果 */
+    input:focus {
+        outline: none;
+        border: 2px solid #ff007f;
+        box-shadow: 0 0 5px rgba(255, 0, 127, 0.5);
+    }
+
+    /* 盒子陰影效果 */
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* 彈窗動畫 */
+    #popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 10000;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
             margin: 0;
             padding: 0;
+            color: #fff;
         }
         .container {
             max-width: 600px;
             margin: 50px auto;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             padding: 30px;
+            transition: all 0.3s ease-in-out;
         }
         h1 {
             text-align: center;
-            color: #333;
             font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #333;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         label {
             display: block;
             font-weight: bold;
-            color: #555;
+            color: #333;
             margin-bottom: 5px;
             text-align: center;
         }
@@ -39,6 +110,16 @@
             align-items: center;
             justify-content: center;
         }
+        .input-container input {
+            width: 100px;
+            padding: 12px;
+            font-size: 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            margin: 0 10px;
+        }
         .input-container button {
             width: 70px;
             height: 70px;
@@ -46,23 +127,16 @@
             background-color: #007BFF;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 50%;
             cursor: pointer;
-            margin: 0 10px;
-            touch-action: manipulation;
+            transition: transform 0.2s;
         }
-        .input-container input {
-            width: 200px;
-            padding: 12px;
-            font-size: 1.2rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-            text-align: center;
-            touch-action: manipulation;
+        .input-container button:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
         }
         button {
-            width: 50%;
+            width: 100%;
             padding: 15px;
             font-size: 1.3rem;
             background-color: #007BFF;
@@ -70,24 +144,24 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-        }
-        .button-container {
-            text-align: center;
-            margin-top: 20px;
+            transition: background-color 0.3s, transform 0.2s;
         }
         button:hover {
-            background: linear-gradient(to right, #0056b3, #003f7f);
-            transform: translateY(-2px);
+            background-color: #0056b3;
+            transform: translateY(-3px);
         }
         .message {
             text-align: center;
             margin-top: 20px;
             font-weight: bold;
         }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
         button:focus, input:focus {
             outline: none;
         }
-
         /* 彈窗背景 */
         #popup {
             display: none;
@@ -99,32 +173,26 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 10000;
         }
-    
         /* 彈窗內容 */
         #popup .popup-box {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             text-align: center;
-            max-width: 90%;
-            width: 400px;
+            width: 80%;
+            max-width: 400px;
         }
-    
-        /* 彈窗文字 */
         #popup .popup-box p {
             font-size: 1.3rem;
             color: #333;
             margin-bottom: 20px;
         }
-    
-        /* 確定按鈕 */
         #popup .popup-box button {
-            font-size: 1.1rem;
             padding: 10px 20px;
             background-color: #007BFF;
             color: white;
@@ -132,11 +200,9 @@
             border-radius: 5px;
             cursor: pointer;
         }
-    
         #popup .popup-box button:hover {
-            background: linear-gradient(to right, #0056b3, #003f7f);
+            background-color: #0056b3;
         }
-
         /* 遮罩層 */
         #overlay {
             display: none;
@@ -148,7 +214,6 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 9999;
         }
-
         .message-box {
             position: absolute;
             top: 50%;
@@ -158,58 +223,85 @@
             color: white;
             text-align: center;
         }
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;  /* 垂直排列 label 和 input */
+            align-items: center;  /* 使它們居中 */
+        }
+        
+        label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        input {
+            width: 80%; /* 可以調整為更適合的寬度 */
+            max-width: 400px; /* 限制最大寬度 */
+            padding: 12px;
+            font-size: 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <h1>新增福音紀錄</h1>
+
         <div class="form-group">
             <label for="name">名稱</label>
-            <div class="input-container">
-                <input type="text" id="name" placeholder="請輸入名稱">
-            </div>
+            <input type="text" id="name" placeholder="請輸入名稱">
         </div>
-        
+
         <div class="form-group">
             <label for="people">次數</label>
             <div class="input-container">
-                <button type="button" id="people-dec">-</button>
-                <input type="number" id="people" placeholder="請輸入次數" value="0">
-                <button type="button" id="people-inc">+</button>
+                <button id="people-dec">-</button>
+                <input type="number" id="people" value="0">
+                <button id="people-inc">+</button>
             </div>
         </div>
 
         <div class="form-group">
             <label for="times">人數</label>
             <div class="input-container">
-                <button type="button" id="times-dec">-</button>
-                <input type="number" id="times" placeholder="請輸入人數" value="0">
-                <button type="button" id="times-inc">+</button>
+                <button id="times-dec">-</button>
+                <input type="number" id="times" value="0">
+                <button id="times-inc">+</button>
             </div>
         </div>
 
         <div class="form-group">
             <label for="talk">對話</label>
             <div class="input-container">
-                <button type="button" id="talk-dec">-</button>
-                <input type="number" id="talk" placeholder="請輸入對話" value="0">
-                <button type="button" id="talk-inc">+</button>
+                <button id="talk-dec">-</button>
+                <input type="number" id="talk" value="0">
+                <button id="talk-inc">+</button>
             </div>
         </div>
 
         <div class="form-group">
             <label for="line">Line</label>
             <div class="input-container">
-                <button type="button" id="line-dec">-</button>
-                <input type="number" id="line" placeholder="請輸入行數" value="0">
-                <button type="button" id="line-inc">+</button>
+                <button id="line-dec">-</button>
+                <input type="number" id="line" value="0">
+                <button id="line-inc">+</button>
             </div>
         </div>
+
         <div class="button-container">
-        <button id="submitBtn">新增</button>
-        <div class="message" id="message"></div>
-        <a href="Index.html">
-            <button id="insertBtn">回到查詢頁面</button>
-        </a>
+            <button id="submitBtn">新增</button>
+            <div class="message" id="message"></div>
+            <a href="Index.html">
+                <button>回到查詢頁面</button>
+            </a>
         </div>
     </div>
 
@@ -233,18 +325,17 @@
             overlay.style.display = "block";
             overlay.querySelector(".message-box").textContent = message || "新增中...";
         }
-    
+
         // 隱藏遮罩層
         function hideOverlay() {
             const overlay = document.getElementById("overlay");
             overlay.style.display = "none";
         }
-    
+
         // 顯示彈窗
         function showPopup(message) {
             const popup = document.getElementById("popup");
             const messageBox = document.getElementById("popup-message");
-
             messageBox.textContent = message;
             popup.style.display = "block";
 
@@ -266,7 +357,6 @@
         // 發送資料到 Webhook
         async function sendToWebhook(payload) {
             const webhookUrl = "https://hook.eu2.make.com/7wbapny15so5m2flnks6n5rp4puosab5"; // 替換為您的 Webhook URL
-
             const response = await fetch(webhookUrl, {
                 method: "POST",
                 headers: {
