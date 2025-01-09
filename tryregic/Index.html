@@ -345,7 +345,10 @@
                 alert("資料查詢失敗，請檢查錯誤日誌。");
             }
         }
-        
+        window.onload = () => {
+            setTodaysDate();  // Set today's date in the date input fields
+            fetchData();      // Automatically fetch data when the page loads
+        };
          document.getElementById("fetchBtn").addEventListener("click", fetchData);
     </script>
 </body>
