@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>新增福音紀錄</title>
     <style>
            /* 背景漸變和動態效果 */
@@ -248,6 +249,10 @@
             border-radius: 10px;
             box-sizing: border-box;
             text-align: center;
+        }
+        input, button {
+            -webkit-user-select: none; /* 禁用用戶選擇行為 */
+            -webkit-touch-callout: none; /* 禁用點擊放大效果 */
         }
     </style>
 </head>
