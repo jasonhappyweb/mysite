@@ -76,11 +76,7 @@
         h1 {
             text-align: center;
             font-size: 1.7rem;
-            margin-bottom: 20px;
             color: #333;
-        }
-        .form-group {
-            margin-bottom: 20px;
         }
         label {
             display: block;
@@ -94,35 +90,35 @@
             align-items: center;
             justify-content: center;
         }
-        /* 增加數字輸入框和加減號按鈕的大小 */
-       .input-container input {
-     width: 150px; /* 增加寬度 */
-     padding: 15px; /* 增加內邊距 */
-     font-size: 2.0rem; /* 增大字體 */
-     border: 1px solid #ddd;
-     border-radius: 10px;
-    box-sizing: border-box;
-    text-align: center;
-    margin: 0 15px; /* 增加左右間距 */
-}
+        
+        .input-container input {
+            width: 150px;
+            padding: 15px;
+            font-size: 2.0rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            margin: 0 15px; /* 增加左右間距，防止按鈕與輸入框重疊 */
+        }
+        
+        .input-container button {
+            width: 80px;
+            height: 80px;
+            font-size: 40px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+            -webkit-touch-callout: none; /* 禁用點擊放大效果 */
+        }
 
-.input-container button {
-    width: 80px; /* 增加按鈕寬度 */
-    height: 80px; /* 增加按鈕高度 */
-    font-size: 40px; /* 增大字體大小 */
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: transform 0.2s;
-    -webkit-touch-callout: none; /* 禁用點擊放大效果 */
-}
-
-.input-container button:hover {
-    background-color: #0056b3;
-    transform: scale(1.1);
-}
+    .input-container button:hover {
+        background-color: #0056b3;
+        transform: scale(1.1);
+    }
         button {
             -webkit-touch-callout: none; /* 禁用點擊放大效果 */
             width: 100%;
@@ -257,7 +253,7 @@
         </div>
 
         <div class="form-group">
-            <label for="people">次數</label>
+            <label >次數</label>
             <div class="input-container">
                 <button id="people-dec">-</button>
                 <input id="people" value="0">
@@ -266,7 +262,7 @@
         </div>
 
         <div class="form-group">
-            <label for="times">人數</label>
+            <label >人數</label>
             <div class="input-container">
                 <button id="times-dec">-</button>
                 <input id="times" value="0">
@@ -275,7 +271,7 @@
         </div>
 
         <div class="form-group">
-            <label for="talk">對話</label>
+            <label >對話</label>
             <div class="input-container">
                 <button id="talk-dec">-</button>
                 <input id="talk" value="0">
@@ -284,7 +280,7 @@
         </div>
 
         <div class="form-group">
-            <label for="line">Line</label>
+            <label >Line</label>
             <div class="input-container">
                 <button id="line-dec">-</button>
                 <input id="line" value="0">
@@ -447,9 +443,9 @@
     //    e.preventDefault();
     //});
     document.addEventListener("touchstart", function(event) {
-        // 如果點擊的不是 input 輸入框，則防止觸發鍵盤
-        if (!event.target.closest('input')) {
-            event.preventDefault();
+        // 確保檢查的只有 input 或 button 元素，而不是 label 或其他元素
+        if (event.target.closest('label')) {
+            event.preventDefault(); // 只有在點擊非 input、button 和 label 元素時阻止事件
         }
     });
     </script>
