@@ -48,6 +48,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin: 0 10px;  /* Add horizontal margin to space out the buttons */
         }
         .input-container input {
             width: 200px; /* 增大輸入框 */
@@ -59,32 +60,49 @@
             text-align: center;
         }
         button {
-            width: 100%;
+            width: 50%;
             padding: 15px;  /* 增大按鈕內邊距 */
             font-size: 1.3rem;  /* 增大字體大小 */
+
             background-color: #007BFF;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 25px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #fff;
+            background: linear-gradient(to right, #007BFF, #0056b3);
+            border: black;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
         button:hover {
-            background-color: #0056b3;
+            background: linear-gradient(to right, #0056b3, #003f7f);
+            transform: translateY(-2px);
         }
         .message {
             text-align: center;
             margin-top: 20px;
             font-weight: bold;
         }
+        #name {
+            width: 300px;  /* Increased width */
+            padding: 15px;  /* Increased padding */
+            font-size: 1.5rem;  /* Increased font size */
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="Index.html">
-            <button id="insertBtn">回到查詢頁面</button>
-        </a>
-        <h1>新增資料</h1>
-
         <div class="form-group">
             <label for="name">名稱</label>
             <div class="input-container">
@@ -93,28 +111,28 @@
         </div>
         
         <div class="form-group">
-            <label for="people">人數</label>
+            <label for="people">次數</label>
             <div class="input-container">
                 <button type="button" id="people-dec">-</button>
-                <input type="number" id="people" placeholder="請輸入人數" value="0">
+                <input type="number" id="people" placeholder="請輸入次數" value="0">
                 <button type="button" id="people-inc">+</button>
             </div>
         </div>
 
         <div class="form-group">
-            <label for="times">次數</label>
+            <label for="times">人數</label>
             <div class="input-container">
                 <button type="button" id="times-dec">-</button>
-                <input type="number" id="times" placeholder="請輸入次數" value="0">
+                <input type="number" id="times" placeholder="請輸入人數" value="0">
                 <button type="button" id="times-inc">+</button>
             </div>
         </div>
 
         <div class="form-group">
-            <label for="talk">交談次數</label>
+            <label for="talk">對話</label>
             <div class="input-container">
                 <button type="button" id="talk-dec">-</button>
-                <input type="number" id="talk" placeholder="請輸入交談次數" value="0">
+                <input type="number" id="talk" placeholder="請輸入對話" value="0">
                 <button type="button" id="talk-inc">+</button>
             </div>
         </div>
@@ -127,9 +145,13 @@
                 <button type="button" id="line-inc">+</button>
             </div>
         </div>
-
+        <div class="button-container">
         <button id="submitBtn">新增</button>
         <div class="message" id="message"></div>
+        <a href="Index.html">
+            <button id="insertBtn">回到查詢頁面</button>
+        </a>
+        </div>
     </div>
 
     <script>
