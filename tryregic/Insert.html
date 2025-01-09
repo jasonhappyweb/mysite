@@ -92,7 +92,7 @@
         }
         h1 {
             text-align: center;
-            font-size: 2.5rem;
+            font-size: 1.7rem;
             margin-bottom: 20px;
             color: #333;
         }
@@ -254,6 +254,10 @@
             -webkit-user-select: none; /* 禁用用戶選擇行為 */
             -webkit-touch-callout: none; /* 禁用點擊放大效果 */
         }
+        /* 防止點擊時放大縮小的動畫 */
+        button:active {
+            transform: none;
+        }
     </style>
 </head>
 <body>
@@ -269,7 +273,7 @@
             <label for="people">次數</label>
             <div class="input-container">
                 <button id="people-dec">-</button>
-                <input type="number" id="people" value="0">
+                <input id="people" value="0">
                 <button id="people-inc">+</button>
             </div>
         </div>
@@ -278,7 +282,7 @@
             <label for="times">人數</label>
             <div class="input-container">
                 <button id="times-dec">-</button>
-                <input type="number" id="times" value="0">
+                <input id="times" value="0">
                 <button id="times-inc">+</button>
             </div>
         </div>
@@ -287,7 +291,7 @@
             <label for="talk">對話</label>
             <div class="input-container">
                 <button id="talk-dec">-</button>
-                <input type="number" id="talk" value="0">
+                <input id="talk" value="0">
                 <button id="talk-inc">+</button>
             </div>
         </div>
@@ -296,7 +300,7 @@
             <label for="line">Line</label>
             <div class="input-container">
                 <button id="line-dec">-</button>
-                <input type="number" id="line" value="0">
+                <input id="line" value="0">
                 <button id="line-inc">+</button>
             </div>
         </div>
