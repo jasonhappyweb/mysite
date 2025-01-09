@@ -108,9 +108,9 @@
 }
 
 .input-container button {
-    width: 100px; /* 增加按鈕寬度 */
-    height: 100px; /* 增加按鈕高度 */
-    font-size: 50px; /* 增大字體大小 */
+    width: 80px; /* 增加按鈕寬度 */
+    height: 80px; /* 增加按鈕高度 */
+    font-size: 40px; /* 增大字體大小 */
     background-color: #007BFF;
     color: white;
     border: none;
@@ -438,6 +438,16 @@
         document.getElementById("line-dec").addEventListener("click", function () {
             changeValue("line", -1);
         });
+            // 禁用縮放功能
+    document.addEventListener('touchstart', function(e) {
+        if (e.touches.length > 1) {
+            e.preventDefault();
+        }
+    });
+
+    document.addEventListener('gesturestart', function(e) {
+        e.preventDefault();
+    });
     </script>
 </body>
 </html>
