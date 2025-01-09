@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ragic Data Insert</title>
+    <title>新增福音紀錄</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,7 +22,7 @@
         h1 {
             text-align: center;
             color: #333;
-            font-size: 2.5rem; /* 增大名稱字體大小 */
+            font-size: 2.5rem;
         }
         .form-group {
             margin-bottom: 15px;
@@ -40,30 +40,31 @@
             justify-content: center;
         }
         .input-container button {
-            width: 70px;  /* 增大按鈕寬度 */
-            height: 70px;  /* 增大按鈕高度 */
-            font-size: 28px;  /* 增大字體大小 */
+            width: 70px;
+            height: 70px;
+            font-size: 28px;
             background-color: #007BFF;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 0 10px;  /* Add horizontal margin to space out the buttons */
+            margin: 0 10px;
+            touch-action: manipulation;
         }
         .input-container input {
-            width: 200px; /* 增大輸入框 */
+            width: 200px;
             padding: 12px;
-            font-size: 1.2rem; /* 增大字體大小 */
+            font-size: 1.2rem;
             border: 1px solid #ddd;
             border-radius: 5px;
             box-sizing: border-box;
             text-align: center;
+            touch-action: manipulation;
         }
         button {
             width: 50%;
-            padding: 15px;  /* 增大按鈕內邊距 */
-            font-size: 1.3rem;  /* 增大字體大小 */
-
+            padding: 15px;
+            font-size: 1.3rem;
             background-color: #007BFF;
             color: white;
             border: none;
@@ -74,17 +75,6 @@
             text-align: center;
             margin-top: 20px;
         }
-        button {
-            padding: 12px 25px;
-            text-align: center;
-            font-size: 1.1rem;
-            color: #fff;
-            background: linear-gradient(to right, #007BFF, #0056b3);
-            border: black;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-        }
         button:hover {
             background: linear-gradient(to right, #0056b3, #003f7f);
             transform: translateY(-2px);
@@ -94,10 +84,8 @@
             margin-top: 20px;
             font-weight: bold;
         }
-        #name {
-            width: 300px;  /* Increased width */
-            padding: 15px;  /* Increased padding */
-            font-size: 1.5rem;  /* Increased font size */
+        button:focus, input:focus {
+            outline: none;
         }
     </style>
 </head>
