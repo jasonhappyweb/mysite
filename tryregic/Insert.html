@@ -87,6 +87,77 @@
         button:focus, input:focus {
             outline: none;
         }
+
+        /* 彈窗背景 */
+        #popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+        }
+    
+        /* 彈窗內容 */
+        #popup .popup-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+        }
+    
+        /* 彈窗文字 */
+        #popup .popup-box p {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+    
+        /* 確定按鈕 */
+        #popup .popup-box button {
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    
+        #popup .popup-box button:hover {
+            background: linear-gradient(to right, #0056b3, #003f7f);
+        }
+
+        /* 遮罩層 */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
+
+        .message-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            color: white;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -142,35 +213,47 @@
         </div>
     </div>
 
+    <!-- 彈窗 -->
+    <div id="popup">
+        <div class="popup-box">
+            <p id="popup-message">訊息內容</p>
+            <button id="popup-close">確定</button>
+        </div>
+    </div>
+
+    <!-- 遮罩層 -->
+    <div id="overlay">
+        <div class="message-box">新增中...</div>
+    </div>
+
     <script>
-        // 按鈕控制數字增減
-        document.getElementById("people-inc").addEventListener("click", function() {
-            changeValue("people", 1);
-        });
-        document.getElementById("people-dec").addEventListener("click", function() {
-            changeValue("people", -1);
-        });
+        // 顯示遮罩層
+        function showOverlay(message) {
+            const overlay = document.getElementById("overlay");
+            overlay.style.display = "block";
+            overlay.querySelector(".message-box").textContent = message || "新增中...";
+        }
+    
+        // 隱藏遮罩層
+        function hideOverlay() {
+            const overlay = document.getElementById("overlay");
+            overlay.style.display = "none";
+        }
+    
+        // 顯示彈窗
+        function showPopup(message) {
+            const popup = document.getElementById("popup");
+            const messageBox = document.getElementById("popup-message");
 
-        document.getElementById("times-inc").addEventListener("click", function() {
-            changeValue("times", 1);
-        });
-        document.getElementById("times-dec").addEventListener("click", function() {
-            changeValue("times", -1);
-        });
+            messageBox.textContent = message;
+            popup.style.display = "block";
 
-        document.getElementById("talk-inc").addEventListener("click", function() {
-            changeValue("talk", 1);
-        });
-        document.getElementById("talk-dec").addEventListener("click", function() {
-            changeValue("talk", -1);
-        });
-
-        document.getElementById("line-inc").addEventListener("click", function() {
-            changeValue("line", 1);
-        });
-        document.getElementById("line-dec").addEventListener("click", function() {
-            changeValue("line", -1);
-        });
+            // 點擊確定按鈕後關閉彈窗
+            document.getElementById("popup-close").onclick = () => {
+                popup.style.display = "none";
+                clearFields(); // 清空輸入框
+            };
+        }
 
         // 改變輸入框的數值
         function changeValue(id, delta) {
@@ -180,46 +263,14 @@
             input.value = value < 0 ? 0 : value; // 防止數值為負數
         }
 
-        // 新增資料到 Webhook
-        async function insertData() {
-            const name = document.getElementById("name").value.trim();
-            const people = document.getElementById("people").value.trim();
-            const times = document.getElementById("times").value.trim();
-            const talk = document.getElementById("talk").value.trim();
-            const line = document.getElementById("line").value.trim();
-            const messageDiv = document.getElementById("message");
-
-            // 驗證輸入
-            if (!name || !people || !times || !talk || !line) {
-                messageDiv.textContent = "請填寫所有欄位！";
-                messageDiv.style.color = "red";
-                return;
-            }
-
-            // 將資料組合成 JSON 並加入 status
-            const payload = {
-                "data": `${name}/${people}/${times}/${talk}/${line}`,
-                "status": "active"  // 預設為 active
-            };
-
-            try {
-                // 發送資料到 Webhook
-                await sendToWebhook(payload);
-            } catch (error) {
-                console.error("Error inserting data:", error);
-                messageDiv.textContent = "資料新增失敗，請檢查錯誤日誌。";
-                messageDiv.style.color = "red";
-            }
-        }
-
         // 發送資料到 Webhook
         async function sendToWebhook(payload) {
             const webhookUrl = "https://hook.eu2.make.com/7wbapny15so5m2flnks6n5rp4puosab5"; // 替換為您的 Webhook URL
 
             const response = await fetch(webhookUrl, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(payload),
             });
@@ -227,14 +278,81 @@
             if (!response.ok) {
                 throw new Error("資料發送失敗");
             }
-
-            const messageDiv = document.getElementById("message");
-            messageDiv.textContent = "資料新增成功！";
-            messageDiv.style.color = "green";
         }
 
-        // 綁定按鈕事件
+        // 新增資料
+        async function insertData() {
+            const name = document.getElementById("name").value.trim();
+            const people = document.getElementById("people").value.trim();
+            const times = document.getElementById("times").value.trim();
+            const talk = document.getElementById("talk").value.trim();
+            const line = document.getElementById("line").value.trim();
+
+            // 驗證輸入
+            if (!name || !people || !times || !talk || !line) {
+                showPopup("請填寫所有欄位！");
+                return;
+            }
+
+            // 顯示遮罩層
+            showOverlay("新增中...");
+
+            const payload = {
+                data: `${name}/${people}/${times}/${talk}/${line}`,
+                status: "active", // 預設為 active
+            };
+
+            try {
+                await sendToWebhook(payload);
+                showPopup("資料新增成功！");
+            } catch (error) {
+                console.error("Error inserting data:", error);
+                showPopup("資料新增失敗，請檢查錯誤日誌。");
+            } finally {
+                hideOverlay(); // 隱藏遮罩層
+            }
+        }
+
+        // 清空所有輸入框
+        function clearFields() {
+            document.getElementById("name").value = "";
+            document.getElementById("people").value = 0;
+            document.getElementById("times").value = 0;
+            document.getElementById("talk").value = 0;
+            document.getElementById("line").value = 0;
+        }
+
+        // 綁定新增按鈕的事件
         document.getElementById("submitBtn").addEventListener("click", insertData);
+
+        // 綁定增減按鈕事件
+        document.getElementById("people-inc").addEventListener("click", function () {
+            changeValue("people", 1);
+        });
+        document.getElementById("people-dec").addEventListener("click", function () {
+            changeValue("people", -1);
+        });
+
+        document.getElementById("times-inc").addEventListener("click", function () {
+            changeValue("times", 1);
+        });
+        document.getElementById("times-dec").addEventListener("click", function () {
+            changeValue("times", -1);
+        });
+
+        document.getElementById("talk-inc").addEventListener("click", function () {
+            changeValue("talk", 1);
+        });
+        document.getElementById("talk-dec").addEventListener("click", function () {
+            changeValue("talk", -1);
+        });
+
+        document.getElementById("line-inc").addEventListener("click", function () {
+            changeValue("line", 1);
+        });
+        document.getElementById("line-dec").addEventListener("click", function () {
+            changeValue("line", -1);
+        });
     </script>
 </body>
 </html>
