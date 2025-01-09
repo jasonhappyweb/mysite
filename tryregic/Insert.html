@@ -111,31 +111,34 @@
             align-items: center;
             justify-content: center;
         }
-        .input-container input {
-            width: 100px;
-            padding: 12px;
-            font-size: 1.2rem;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-sizing: border-box;
-            text-align: center;
-            margin: 0 10px;
-        }
-        .input-container button {
-            width: 70px;
-            height: 70px;
-            font-size: 28px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .input-container button:hover {
-            background-color: #0056b3;
-            transform: scale(1.1);
-        }
+        /* 增加數字輸入框和加減號按鈕的大小 */
+       .input-container input {
+     width: 200px; /* 增加寬度 */
+     padding: 20px; /* 增加內邊距 */
+     font-size: 2.0rem; /* 增大字體 */
+     border: 1px solid #ddd;
+     border-radius: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    margin: 0 15px; /* 增加左右間距 */
+}
+
+.input-container button {
+    width: 100px; /* 增加按鈕寬度 */
+    height: 100px; /* 增加按鈕高度 */
+    font-size: 50px; /* 增大字體大小 */
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.input-container button:hover {
+    background-color: #0056b3;
+    transform: scale(1.1);
+}
         button {
             width: 100%;
             padding: 15px;
@@ -265,7 +268,6 @@
         <h1>新增福音紀錄</h1>
 
         <div class="form-group">
-            <label for="name">名稱</label>
             <input type="text" id="name" placeholder="請輸入名稱">
         </div>
 
