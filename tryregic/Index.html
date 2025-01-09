@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
         }
+        
         .container {
             max-width: 900px;
             margin: 50px auto;
@@ -19,31 +20,36 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             padding: 40px;
         }
+        
         h1 {
             text-align: center;
             color: #333;
             font-size: 2rem;
             margin-bottom: 20px;
         }
+        
         .input-container {
             text-align: center;
             margin-bottom: 25px;
         }
+        
         input[type="text"], input[type="date"] {
             width: 80%;
             padding: 18px;
-            font-size: 1.2rem;  /* 增大字體 */
+            font-size: 1.2rem;  /* Increase font size */
             border: 1px solid #ccc;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             transition: border-color 0.2s, box-shadow 0.2s;
             margin-top: 10px;
         }
+        
         input[type="text"]:focus, input[type="date"]:focus {
             border-color: #007BFF;
             box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
             outline: none;
         }
+        
         .data-display {
             margin-top: 25px;
             padding: 20px;
@@ -53,45 +59,54 @@
             max-height: 400px; /* Limit the height of the data container */
             overflow-y: auto; /* Allow vertical scrolling */
         }
+        
+        /* Adjust table size - make it larger */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            table-layout: fixed; /* 保持列固定 */
-            font-size: 0.85rem; /* 縮小表格的字體大小 */
+            table-layout: auto; /* Let the table expand to fit content */
+            font-size: 1rem; /* Increase font size */
         }
         
         th, td {
-            padding: 10px; /* 調整內邊距以適應小字體 */
+            padding: 12px; /* Increase padding for larger cells */
             text-align: center;
             border: 1px solid #ddd;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+        
         th {
             background-color: #007BFF;
             color: white;
             font-weight: 600;
         }
+        
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
+        
         tr:hover {
             background-color: #e3f2fd;
         }
+        
         .highlight {
             font-weight: bold;
             padding: 5px;
             border-radius: 5px;
         }
+        
         .button-container {
             text-align: center;
             margin-top: 20px;
         }
+        
+        /* Smaller button size */
         button {
-            padding: 12px 25px;
-            font-size: 1.1rem;
+            padding: 8px 16px; /* Smaller padding */
+            font-size: 0.9rem; /* Smaller font size */
             color: #fff;
             background: linear-gradient(to right, #007BFF, #0056b3);
             border: black;
@@ -99,13 +114,16 @@
             cursor: pointer;
             transition: background 0.3s, transform 0.2s;
         }
+        
         button:hover {
             background: linear-gradient(to right, #0056b3, #003f7f);
             transform: translateY(-2px);
         }
+        
         a {
             text-decoration: none;
         }
+        
         .total-row {
             margin-top: 20px;
             text-align: right;
@@ -115,11 +133,13 @@
             border: 1px solid #ddd;
             border-radius: 8px;
         }
+        
+        /* Adjust date picker to be larger */
         input[type="date"] {
-            width: 40%; /* 增大日期選擇框 */
-            padding: 14px; /* 增大內邊距 */
+            width: 40%; /* Increase date picker width */
+            padding: 14px; /* Increase padding */
             text-align: center;
-            font-size: 1.2rem; /* 使文字大小更大 */
+            font-size: 1.2rem; /* Larger font */
             border: 1px solid #ccc;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -132,6 +152,7 @@
             box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
             outline: none;
         }
+        
     </style>
 </head>
 <body>
