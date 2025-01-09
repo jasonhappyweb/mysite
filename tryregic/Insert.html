@@ -1,80 +1,229 @@
-<script>
-    // 主函數 - 插入資料
-    async function insertData() {
-        // 獲取輸入框的值
-        const name = document.getElementById("name").value.trim();
-        const people = document.getElementById("people").value.trim();
-        const times = document.getElementById("times").value.trim();
-        const talk = document.getElementById("talk").value.trim();
-        const line = document.getElementById("line").value.trim();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ragic Data Insert</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .input-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .input-container button {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .input-container input {
+            width: 160px; /* 輸入框縮小 */
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.1rem;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="Index.html">
+            <button id="insertBtn">回到查詢頁面</button>
+        </a>
+        <h1>新增資料</h1>
+
+        <div class="form-group">
+            <label for="name">名稱</label>
+            <div class="input-container">
+                <input type="text" id="name" placeholder="請輸入名稱">
+            </div>
+        </div>
         
-        const datetime = new Date();
-        const year = datetime.getFullYear();
-        const month = String(datetime.getMonth() + 1).padStart(2, '0');  // 月份從 0 開始，所以要加 1
-        const day = String(datetime.getDate()).padStart(2, '0');
-        const hours = String(datetime.getHours()).padStart(2, '0');
-        const minutes = String(datetime.getMinutes()).padStart(2, '0');
-        const seconds = String(datetime.getSeconds()).padStart(2, '0');
-        
-        // 組合成 'YYYY年MM月DD日 HH:MM:SS' 格式
-        const formattedDatetime = `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
-        
-        // 驗證輸入
-        if (!name || !people || !times || !talk || !line) {
-            alert("請填寫所有欄位！");
-            return;
+        <div class="form-group">
+            <label for="people">人數</label>
+            <div class="input-container">
+                <button type="button" id="people-dec">-</button>
+                <input type="number" id="people" placeholder="請輸入人數" value="0">
+                <button type="button" id="people-inc">+</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="times">次數</label>
+            <div class="input-container">
+                <button type="button" id="times-dec">-</button>
+                <input type="number" id="times" placeholder="請輸入次數" value="0">
+                <button type="button" id="times-inc">+</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="talk">交談次數</label>
+            <div class="input-container">
+                <button type="button" id="talk-dec">-</button>
+                <input type="number" id="talk" placeholder="請輸入交談次數" value="0">
+                <button type="button" id="talk-inc">+</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="line">Line</label>
+            <div class="input-container">
+                <button type="button" id="line-dec">-</button>
+                <input type="number" id="line" placeholder="請輸入行數" value="0">
+                <button type="button" id="line-inc">+</button>
+            </div>
+        </div>
+
+        <button id="submitBtn">新增</button>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        // 按鈕控制數字增減
+        document.getElementById("people-inc").addEventListener("click", function() {
+            changeValue("people", 1);
+        });
+        document.getElementById("people-dec").addEventListener("click", function() {
+            changeValue("people", -1);
+        });
+
+        document.getElementById("times-inc").addEventListener("click", function() {
+            changeValue("times", 1);
+        });
+        document.getElementById("times-dec").addEventListener("click", function() {
+            changeValue("times", -1);
+        });
+
+        document.getElementById("talk-inc").addEventListener("click", function() {
+            changeValue("talk", 1);
+        });
+        document.getElementById("talk-dec").addEventListener("click", function() {
+            changeValue("talk", -1);
+        });
+
+        document.getElementById("line-inc").addEventListener("click", function() {
+            changeValue("line", 1);
+        });
+        document.getElementById("line-dec").addEventListener("click", function() {
+            changeValue("line", -1);
+        });
+
+        // 改變輸入框的數值
+        function changeValue(id, delta) {
+            const input = document.getElementById(id);
+            let value = parseInt(input.value) || 0;
+            value += delta;
+            input.value = value < 0 ? 0 : value; // 防止數值為負數
         }
 
-        // 將資料組合成 JSON
-        const payload = {
-            "1000001": name,
-            "1000002": people,
-            "1000003": times,
-            "1000004": talk,
-            "1000005": line,
-            "1000007": formattedDatetime
-        };
+        // 新增資料到 Webhook
+        async function insertData() {
+            const name = document.getElementById("name").value.trim();
+            const people = document.getElementById("people").value.trim();
+            const times = document.getElementById("times").value.trim();
+            const talk = document.getElementById("talk").value.trim();
+            const line = document.getElementById("line").value.trim();
+            const messageDiv = document.getElementById("message");
 
-        try {
-            // 調用 ajaxPost 函數並將 payload 傳遞給它
-            ajaxPost(payload);
-        } catch (error) {
-            console.error("Error inserting data:", error);
-            alert("資料新增失敗，請檢查錯誤日誌。");
-        }
-    }
-
-    // 使用 XMLHttpRequest 發送 POST 請求
-    function ajaxPost(payload) {
-        const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-        const apiUrl = "https://ap13.ragic.com/OCHDB/ragicsales-order-management/1";
-        const apiKey = "dkRKQnBSWCtMZjdja0pnYW5DUFBXZjZMbXNOR3NwYkFkSmI2UStQR2ZEWStxRU5KQ1FHOEQybGFERWFLWUpOVQ=";
-
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", `${proxyUrl}${apiUrl}?APIKey=${apiKey}&api`, true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-
-        // 定義請求完成後的處理邏輯
-        xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                console.log("資料新增成功！", xhr.responseText);
-                alert("資料新增成功！");
-            } else {
-                console.error("資料新增失敗", xhr.status, xhr.statusText);
-                alert("資料新增失敗，請檢查錯誤日誌。");
+            // 驗證輸入
+            if (!name || !people || !times || !talk || !line) {
+                messageDiv.textContent = "請填寫所有欄位！";
+                messageDiv.style.color = "red";
+                return;
             }
-        };
 
-        // 定義請求錯誤的處理邏輯
-        xhr.onerror = function() {
-            console.error("請求發生錯誤");
-            alert("資料新增失敗，請檢查錯誤日誌。");
-        };
+            // 將資料組合成 JSON 並加入 status
+            const payload = {
+                "data": `${name}/${people}/${times}/${talk}/${line}`,
+                "status": "active"  // 預設為 active
+            };
 
-        // 發送 POST 請求
-        xhr.send(JSON.stringify(payload));
-    }
+            try {
+                // 發送資料到 Webhook
+                await sendToWebhook(payload);
+            } catch (error) {
+                console.error("Error inserting data:", error);
+                messageDiv.textContent = "資料新增失敗，請檢查錯誤日誌。";
+                messageDiv.style.color = "red";
+            }
+        }
 
-    // 綁定按鈕事件
-    document.getElementById("submitBtn").addEventListener("click", insertData);
-</script>
+        // 發送資料到 Webhook
+        async function sendToWebhook(payload) {
+            const webhookUrl = "https://hook.eu2.make.com/7wbapny15so5m2flnks6n5rp4puosab5"; // 替換為您的 Webhook URL
+
+            const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error("資料發送失敗");
+            }
+
+            const messageDiv = document.getElementById("message");
+            messageDiv.textContent = "資料新增成功！";
+            messageDiv.style.color = "green";
+        }
+
+        // 綁定按鈕事件
+        document.getElementById("submitBtn").addEventListener("click", insertData);
+    </script>
+</body>
+</html>
