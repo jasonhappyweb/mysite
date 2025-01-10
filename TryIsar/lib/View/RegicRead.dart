@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'Regic.dart'; // 导入 InsertDataPage 页面
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:isarapp/main.dart';
 import 'RegicEdit.dart'; // 导入 InsertDataPage 页面
+import 'package:flutter/services.dart'; // 导入 Clipboard 类
 void main() {
   runApp(const ReadData(),);
 
@@ -249,6 +251,89 @@ class _DataViewerState extends State<DataViewer> {
       },
     );
   }
+// 获取今天的日期并格式化
+  String getFormattedDate() {
+    DateTime today = DateTime.now();
+    String formattedDate = DateFormat('M/d').format(today); // 格式化成 1/10
+    String weekDay = DateFormat('E', 'zh_TW').format(today); // 获取星期几，例如：週五
+    return '$formattedDate $weekDay';
+  }
+
+  void _showFormattedData() {
+    String todayFormatted = getFormattedDate(); // 自动获取今天的日期
+
+    String formattedData = '$todayFormatted 福音特攻隊統計\n';
+
+    int totalPeople = 0;
+    int totalTimes = 0;
+    int totalTalk = 0;
+    int totalLine = 0;
+
+    // 用於存儲所有名字並避免重複計算
+    Set<String> uniqueNames = {};
+
+    for (var data in _fetchedData) {
+      formattedData += '${data["Name"]} ${data["People"]}/${data["Times"]}/${data["Talk"]}/${data["Line"]}\n';
+
+      // 累計數據
+      totalPeople += int.tryParse(data["People"]?.toString() ?? "0") ?? 0;
+      totalTimes += int.tryParse(data["Times"]?.toString() ?? "0") ?? 0;
+      totalTalk += int.tryParse(data["Talk"]?.toString() ?? "0") ?? 0;
+      totalLine += int.tryParse(data["Line"]?.toString() ?? "0") ?? 0;
+
+      // 分割名字並去重
+      String name = data["Name"]?.toString() ?? "";
+      for (int i = 0; i < name.length; i += 2) {
+        String singleName = name.substring(i, i + 2); // 取兩個字為一個名字
+        uniqueNames.add(singleName); // 添加到集合中
+      }
+    }
+
+    // 計算去重後的參與人數
+    int totalParticipants = uniqueNames.length;
+
+    formattedData += '\n總計： $totalPeople/$totalTimes/$totalTalk/$totalLine\n';
+    formattedData += '參與人數: $totalParticipants';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("查詢結果"),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(formattedData),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: formattedData));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("已複製到剪貼板")),
+                      );
+                    },
+                    child: const Text("複製"),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("確定"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> _selectStartDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -352,7 +437,7 @@ class _DataViewerState extends State<DataViewer> {
                   onPressed: _fetchData,
                   child: const Text("查詢"),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 14),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -360,9 +445,18 @@ class _DataViewerState extends State<DataViewer> {
                       MaterialPageRoute(builder: (context) => InsertData()),
                     );
                   },
-                  child: const Text("新增資料"),
+                  child: const Text("新增"),
                 ),
-                const SizedBox(width: 16),
+                // 在build方法中，添加一个按钮来显示结果
+                const SizedBox(width: 14),
+                ElevatedButton(
+                  onPressed: () {
+                    _showFormattedData();  // 调用格式化数据的显示方法
+                  },
+                  child: const Text("結果"),
+                ),
+
+                const SizedBox(width: 14),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(

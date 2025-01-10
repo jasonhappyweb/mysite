@@ -224,27 +224,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
-                  SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ReadBest()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange[600],
-                      padding: EdgeInsets.symmetric(vertical: 18, horizontal: 32),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      elevation: 5,
-                    ),
-                    child: Text(
-                      '傳到王',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                  ),
                 ],
               ),
             ),

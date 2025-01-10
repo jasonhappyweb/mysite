@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:vibration/vibration.dart';
 import 'dart:convert';
 import 'RegicRead.dart'; // 导入 InsertDataPage 页面
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -159,13 +160,12 @@ class _InsertDataPageState extends State<InsertDataPage> {
       });
     }
   }
-
-  // 控制加減的函數
   void _incrementValue(TextEditingController controller) {
     setState(() {
       int value = int.tryParse(controller.text) ?? 0;
       controller.text = (value + 1).toString();
     });
+    _vibrate(); // 震動
   }
 
   void _decrementValue(TextEditingController controller) {
@@ -175,6 +175,15 @@ class _InsertDataPageState extends State<InsertDataPage> {
         controller.text = (value - 1).toString();
       }
     });
+    _vibrate(); // 震動
+  }
+
+// 添加震動函數
+  Future<void> _vibrate() async {
+    bool? hasVibrator = await Vibration.hasVibrator();
+    if (hasVibrator != null && hasVibrator) {
+      Vibration.vibrate(duration: 100); // 震動 100 毫秒
+    }
   }
 
   // 顯示確認對話框
@@ -261,7 +270,7 @@ class _InsertDataPageState extends State<InsertDataPage> {
                     controller: nameController,
                     decoration: InputDecoration(
                       labelText: "名稱",
-                      labelStyle: TextStyle(color: Colors.blue),
+                      labelStyle: TextStyle(color: Colors.blue, fontSize: 20),  // Adjust the label font size
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(color: Colors.blue, width: 1),
@@ -271,7 +280,7 @@ class _InsertDataPageState extends State<InsertDataPage> {
                         borderSide: BorderSide(color: Colors.blue, width: 2),
                       ),
                     ),
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 22),  // Adjust the font size of the text inside the field
                   ),
                   SizedBox(height: 16), // 增加间距
                   _buildNumberInputField("次數", peopleController),
@@ -371,10 +380,11 @@ class _InsertDataPageState extends State<InsertDataPage> {
       children: [
         IconButton(
           icon: Icon(Icons.remove, color: Colors.blue),
+          iconSize: 30, // 增加加減號的大小
           onPressed: () => _decrementValue(controller),
         ),
         SizedBox(
-          width: 80,
+          width: 100, // 增加寬度以容納更大的數字
           child: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
@@ -391,10 +401,12 @@ class _InsertDataPageState extends State<InsertDataPage> {
                 borderSide: BorderSide(color: Colors.blue, width: 2),
               ),
             ),
+            style: TextStyle(fontSize: 30), // 放大中間數字的字體
           ),
         ),
         IconButton(
           icon: Icon(Icons.add, color: Colors.blue),
+          iconSize: 30, // 增加加減號的大小
           onPressed: () => _incrementValue(controller),
         ),
       ],
