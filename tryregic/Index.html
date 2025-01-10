@@ -261,7 +261,7 @@
                             <td>${record.line}</td>
                             <td class="highlight">${displayformattedDate}</td>
                             <td>
-                                 <!--<button class="button-edit" onclick="editRecord('${key}')">修改</button>-->
+                                <button class="button-edit" onclick="redirectToEditPage('${record.Name}', '${record.people}', '${record.times}', '${record.talk}', '${record.line}', '${displayformattedDate}','${record.Name}/${record.people}/${record.times}/${record.talk}/${record.line}/${displayformattedDate}')">修改</button>
                                 <button class="button-delete" onclick="deleteRecord('${record.Name}/${record.people}/${record.times}/${record.talk}/${record.line}/${displayformattedDate}')">刪除</button>
                             </td>
                         </tr>
@@ -318,7 +318,28 @@
                 }
             }
         }
-    // 發送資料到 Webhook
+    
+
+        function redirectToEditPage(name, people, times, talk, line, date, deletestring) {
+            // 將資料編碼以防止特殊字元影響 URL
+            deletestring = `刪除/${deletestring}`;
+            
+            // 使用 encodeURIComponent 確保日期被正確編碼
+            const encodedParams = new URLSearchParams({
+                name: name,
+                people: people,
+                times: times,
+                talk: talk,
+                line: line,
+                date: date, // 編碼日期
+                deletestring: deletestring
+            }).toString();
+        
+            // 跳轉到修改頁面，並帶上資料
+            window.location.href = `Edit.html?${encodedParams}`;
+        }
+
+        // 發送資料到 Webhook
         async function sendToWebhook(payload) {
             const webhookUrl = "https://hook.eu2.make.com/7wbapny15so5m2flnks6n5rp4puosab5"; // 替換為您的 Webhook URL
             const response = await fetch(webhookUrl, {
