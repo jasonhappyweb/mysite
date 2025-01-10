@@ -282,7 +282,11 @@
                 <button id="line-inc">+</button>
             </div>
         </div>
-
+        <!-- 日期選擇器 -->
+        <div class="form-group">
+            <label for="date">日期</label>
+            <input type="date" id="date" name="date">
+        </div>
         <div class="button-container">
             <button id="submitBtn">新增</button>
             <div class="message" id="message"></div>
@@ -306,6 +310,15 @@
     </div>
 
     <script>
+        window.onload = function() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const day = today.getDate().toString().padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day}`;
+            
+            document.getElementById('date').value = formattedDate;
+        };
         // 顯示遮罩層
         function showOverlay(message) {
             const overlay = document.getElementById("overlay");
@@ -365,9 +378,10 @@
             const times = document.getElementById("times").value.trim();
             const talk = document.getElementById("talk").value.trim();
             const line = document.getElementById("line").value.trim();
+            const date = document.getElementById("date").value.trim(); // 獲取日期
 
             // 驗證輸入
-            if (!name || !people || !times || !talk || !line) {
+            if (!name || !people || !times || !talk || !line|| !date) {
                 showPopup("請填寫所有欄位！");
                 return;
             }
@@ -376,7 +390,7 @@
             showOverlay("新增中...");
 
             const payload = {
-                data: `${name}/${people}/${times}/${talk}/${line}`,
+                data: `新增/${name}/${people}/${times}/${talk}/${line}/${date.replace(/-/g, '/')}`,
                 status: "active", // 預設為 active
             };
 
