@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>查詢福音紀錄</title>
+    <!-- 引入 jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- 引入 BlockUI 插件 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -152,11 +156,22 @@
             box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
             outline: none;
         }
-        
+        .deleting-message {
+            background-color: rgba(255, 165, 0, 0.8);  /* 背景顏色為橙色，透明度80% */
+            color: white;
+            padding: 15px;
+            font-size: 1.2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+   
     <div class="container">
+
         <h1>查詢資料</h1>
 
         <div class="input-container">
@@ -174,6 +189,7 @@
             </a>
         </div>
         <div class="data-display" id="dataDisplay">
+
             <!-- Data will be displayed as a table -->
         </div>
         <div id="totalRow" class="total-row">
@@ -181,7 +197,7 @@
         </div>
 
         <div class="data-display" id="nameDisplay">
-            
+
             <!-- 所有人名將在這裡顯示 -->
         </div>
     </div>
@@ -219,6 +235,7 @@
                             <th>對話</th>
                             <th>Line</th>
                             <th>上傳時間</th>
+                            <th>操作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -243,6 +260,10 @@
                             <td>${record.talk}</td>
                             <td>${record.line}</td>
                             <td class="highlight">${displayformattedDate}</td>
+                            <td>
+                                 <!--<button class="button-edit" onclick="editRecord('${key}')">修改</button>-->
+                                <button class="button-delete" onclick="deleteRecord('${record.Name}/${record.people}/${record.times}/${record.talk}/${record.line}')">刪除</button>
+                            </td>
                         </tr>
                     `;
                 }
@@ -251,13 +272,66 @@
             tableHTML += `</tbody></table>`;
             return tableHTML;
         }
-
+        let data = {};  // 定義 data 為全域變數
         // 顯示總計
         function displayTotal(totalPeople, totalTimes, totalTalks, totalLines) {
             const totalRow = document.getElementById("totalRow");
             totalRow.innerHTML = `
                 <span>總計：次數 ${totalPeople} 人數 ${totalTimes} 對話 ${totalTalks} Line ${totalLines}</span>
             `;
+        }
+        async function deleteRecord(name) {
+            const confirmDelete = confirm("確定要刪除這筆資料嗎？");
+        
+            if (confirmDelete) {
+                // 使用 BlockUI 顯示刪除中訊息
+                $.blockUI({
+                    message: '<h1>資料刪除中...</h1>',  // 顯示的訊息
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#f0ad4e',
+                        color: '#fff',
+                        fontSize: '20px',
+                        borderRadius: '10px',
+                    }
+                });
+        
+                try {
+                    // 構建要發送到 webhook 的字串，格式：刪除/永紳/5/8/0/0
+                    const payload = {
+                        data: `刪除/${name}`,
+                        status: "active", // 預設為 active
+                    };
+        
+                    // 發送資料到 Webhook
+                    await sendToWebhook(payload);
+        
+                    // 刪除成功，隱藏 BlockUI 並顯示成功提示
+                    $.unblockUI();  // 隱藏 BlockUI
+                    alert("資料刪除成功");
+                    fetchData();  // 重新載入資料
+                } catch (error) {
+                    console.error("Webhook 發送失敗:", error);
+                    $.unblockUI();  // 隱藏 BlockUI
+                    alert("刪除失敗，請稍後再試。");
+                }
+            }
+        }
+    // 發送資料到 Webhook
+        async function sendToWebhook(payload) {
+            const webhookUrl = "https://hook.eu2.make.com/7wbapny15so5m2flnks6n5rp4puosab5"; // 替換為您的 Webhook URL
+            const response = await fetch(webhookUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error("資料發送失敗");
+            }
         }
 
         async function fetchData() {
@@ -346,10 +420,11 @@
             }
         }
         window.onload = () => {
-            setTodaysDate();  // Set today's date in the date input fields
-            fetchData();      // Automatically fetch data when the page loads
+         setTodaysDate();  // Set today's date in the date input fields
+         fetchData();      // Automatically fetch data when the page loads
         };
          document.getElementById("fetchBtn").addEventListener("click", fetchData);
     </script>
 </body>
+
 </html>
