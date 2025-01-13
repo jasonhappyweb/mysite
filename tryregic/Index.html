@@ -378,9 +378,9 @@
                 searchdata += `&where=1000007,like,${encodeURIComponent(formattedStartDate)}`;
             } else {
                 const formattedStartDate = date.split("-").join("/") + " 00:00";
-                const formattedEndDate = date1.split("-").join("/") + " 11:59";
-                searchdata += `&where=1000007,gt,${encodeURIComponent(formattedStartDate)}`;
-                searchdata += `&where=1000007,lt,${encodeURIComponent(formattedEndDate)}`;
+                const formattedEndDate = date1.split("-").join("/") + " 23:59";
+                searchdata += `&where=1000007,gt,${formattedStartDate}`;
+                searchdata += `&where=1000007,lt,${formattedEndDate}`;
             }
         
             const apiUrl = `${baseUrl}?V=1&APIKey=${apiKey}${searchdata}&api`;
@@ -391,6 +391,7 @@
         
             try {
                 const response = await fetch(apiUrl);
+                console.log(apiUrl);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -481,8 +482,8 @@
         }
         
         
-     // 複製文本的功能
-    function copyToClipboard() {
+        // 複製文本的功能
+        function copyToClipboard() {
         const text = document.getElementById("nameDisplay").innerText;  // 取得區塊內的純文字
         const textarea = document.createElement("textarea");  // 創建一個 textarea 元素來放置文字
         textarea.value = text;  // 設置 textarea 的值為要複製的文字
@@ -513,23 +514,23 @@
         }, 1000);  // 一秒後消失
     }
         // 取得星期幾的名稱
-    function getWeekdayName(date) {
+        function getWeekdayName(date) {
         const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
         return weekdays[date.getDay()];
     }
 
-    // 格式化日期為 "月/日" 的形式
-    function formatDate(date) {
+        // 格式化日期為 "月/日" 的形式
+        function formatDate(date) {
         const month = date.getMonth() + 1;  // 月份是從 0 開始的，所以要加 1
         const day = date.getDate();
         return `${month}/${day}`;
     }
 
-    window.onload = () => {
+        window.onload = () => {
          setTodaysDate();  // Set today's date in the date input fields
          fetchData();      // Automatically fetch data when the page loads
     };
-         document.getElementById("fetchBtn").addEventListener("click", fetchData);
+           document.getElementById("fetchBtn").addEventListener("click", fetchData);
     </script>
 </body>
 
