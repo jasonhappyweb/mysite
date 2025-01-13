@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>查詢福音紀錄</title>
     <!-- 引入 jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- 引入 BlockUI 插件 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
-    <style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 引入 BlockUI 插件 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+        <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #eef3f9;
@@ -166,9 +166,9 @@
             margin-bottom: 20px;
             font-weight: bold;
         }
-    </style>
-</head>
-<body>
+        </style>
+    </head>
+    <body>
    
     <div class="container">
 
@@ -192,6 +192,7 @@
 
             <!-- Data will be displayed as a table -->
         </div>
+
         <div id="totalRow" class="total-row">
             <!-- Total will be displayed here -->
         </div>
@@ -204,6 +205,9 @@
         <div class="data-display" id="nameDisplay">
 
             <!-- 所有人名將在這裡顯示 -->
+        </div>
+        <div class="data-display" style="text-align: center;" id="individualCountDisplay">
+            <!-- 每個人的出現次數將在這裡顯示 -->
         </div>
     </div>
 
@@ -324,7 +328,6 @@
             }
         }
     
-
         function redirectToEditPage(name, people, times, talk, line, date, deletestring) {
             // 將資料編碼以防止特殊字元影響 URL
             deletestring = `刪除/${deletestring}`;
@@ -407,7 +410,8 @@
                 let totalTimes = 0;
                 let totalTalks = 0;
                 let totalLines = 0;
-                const namesSet = new Set();  // 使用Set來存儲唯一姓名
+                const namesSet = new Set(); // 使用 Set 來存儲唯一姓名
+                const namesCount = {}; // 用來統計每個人的出現次數
         
                 for (const key in data) {
                     if (data.hasOwnProperty(key)) {
@@ -417,11 +421,17 @@
                         totalTalks += parseInt(record.talk) || 0;
                         totalLines += parseInt(record.line) || 0;
         
-                        // 提取名稱並分割每兩個字為一個名字，用來計算參與人數
+                        // 提取名稱並分割每兩個字為一個名字，用來計算參與人數與出現次數
                         if (record.Name) {
                             const nameParts = record.Name.trim().match(/.{1,2}/g); // 每兩個字分開
                             if (nameParts) {
-                                nameParts.forEach(part => namesSet.add(part)); // 將每兩個字加入Set中，保證唯一性
+                                nameParts.forEach(part => {
+                                    namesSet.add(part); // 將每兩個字加入 Set 中，保證唯一性
+                                    if (!namesCount[part]) {
+                                        namesCount[part] = 0;
+                                    }
+                                    namesCount[part] += 1; // 計算每個人出現的次數
+                                });
                             }
                         }
                     }
@@ -431,76 +441,94 @@
                 const today = new Date();
                 const formattedDate = formatDate(today); // 格式化日期
                 const weekdayName = getWeekdayName(today); // 取得星期幾
+        
                 // 顯示名稱和參與人數（顯示原始姓名）
-    const nameDisplay = document.getElementById("nameDisplay");
-    nameDisplay.innerHTML = `
-        <div style="text-align: center; font-weight: bold; font-size: 1.2rem; margin-bottom: 10px; color: red;">
-            ${formattedDate} 週${weekdayName} 福音特攻隊統計<br>
-        </div>
-            
-        <div style="text-align: center; font-size: 1.1rem;">
-            ${Object.values(data).map(record => `${record.Name} ${record.people}/${record.times}/${record.talk}/${record.line}`).join("<br>")}
-        </div><br>
-        <div style="text-align: center; font-weight: bold; font-size: 1rem; margin-bottom: 10px; color: red;">
-            <span>總計： ${totalPeople}/${totalTimes}/${totalTalks}/${totalLines}</span>
-        </div>
-        <div style="text-align: center; font-weight: bold; font-size: 1.2rem; margin-bottom: 10px; color: green;">
-            參與人數: ${namesSet.size} 
-        </div>
-    `;
+                const nameDisplay = document.getElementById("nameDisplay");
+                nameDisplay.innerHTML = `
+                    <div style="text-align: center; font-weight: bold; font-size: 1.2rem; margin-bottom: 10px; color: red;">
+                        ${formattedDate} 週${weekdayName} 福音特攻隊統計<br>
+                    </div>
+                        
+                    <div style="text-align: center; font-size: 1.1rem;">
+                        ${Object.values(data).map(record => `${record.Name} ${record.people}/${record.times}/${record.talk}/${record.line}`).join("<br>")}
+                    </div><br>
+                    <div style="text-align: center; font-weight: bold; font-size: 1rem; margin-bottom: 10px; color: red;">
+                        <span>總計： ${totalPeople}/${totalTimes}/${totalTalks}/${totalLines}</span>
+                    </div>
+                    <div style="text-align: center; font-weight: bold; font-size: 1.2rem; margin-bottom: 10px; color: green;">
+                        參與人數: ${namesSet.size} 
+                    </div>
+                `;
+        
+                // 顯示每個人的出現次數並排序（從大到小）
+                const individualCountDisplay = document.getElementById("individualCountDisplay");
+                const sortedNamesCount = Object.entries(namesCount)
+                    .sort(([, countA], [, countB]) => countB - countA); // 按次數從大到小排序
+        
+                const namesCountHTML = sortedNamesCount
+                    .map(([name, count]) => `<div>${name}: ${count} 次</div>`)
+                    .join("");
+        
+                individualCountDisplay.innerHTML = `
+                    <h3 style="text-align: center; margin-bottom: 10px; color: #007BFF;">每個人的出現次數 (按次數排序)</h3>
+                    ${namesCountHTML}
+                `;
+        
             } catch (error) {
                 console.error("Error fetching data:", error);
                 alert("資料查詢失敗，請檢查錯誤日誌。");
             }
         }
         
-// 複製文本的功能
-function copyToClipboard() {
-    const text = document.getElementById("nameDisplay").innerText;  // 取得區塊內的純文字
-    const textarea = document.createElement("textarea");  // 創建一個 textarea 元素來放置文字
-    textarea.value = text;  // 設置 textarea 的值為要複製的文字
-    document.body.appendChild(textarea);  // 把 textarea 添加到頁面中（不顯示）
-    textarea.select();  // 選中 textarea 的內容
-    document.execCommand("copy");  // 執行複製操作
-    document.body.removeChild(textarea);  // 複製完後移除 textarea
+        
+     // 複製文本的功能
+    function copyToClipboard() {
+        const text = document.getElementById("nameDisplay").innerText;  // 取得區塊內的純文字
+        const textarea = document.createElement("textarea");  // 創建一個 textarea 元素來放置文字
+        textarea.value = text;  // 設置 textarea 的值為要複製的文字
+        document.body.appendChild(textarea);  // 把 textarea 添加到頁面中（不顯示）
+        textarea.select();  // 選中 textarea 的內容
+        document.execCommand("copy");  // 執行複製操作
+        document.body.removeChild(textarea);  // 複製完後移除 textarea
 
-    // 創建提示訊息
-    const copyMessage = document.createElement("div");
-    copyMessage.innerText = "內容已複製！";
-    copyMessage.style.position = "fixed";
-    copyMessage.style.top = "20px";
-    copyMessage.style.left = "50%";
-    copyMessage.style.transform = "translateX(-50%)";
-    copyMessage.style.padding = "10px 20px";
-    copyMessage.style.backgroundColor = "#28a745";  // 綠色背景
-    copyMessage.style.color = "white";
-    copyMessage.style.borderRadius = "5px";
-    copyMessage.style.fontSize = "1rem";
-    copyMessage.style.zIndex = "1000";
-    copyMessage.style.display = "inline-block";
-    document.body.appendChild(copyMessage);
+        // 創建提示訊息
+        const copyMessage = document.createElement("div");
+        copyMessage.innerText = "內容已複製！";
+        copyMessage.style.position = "fixed";
+        copyMessage.style.top = "20px";
+        copyMessage.style.left = "50%";
+        copyMessage.style.transform = "translateX(-50%)";
+        copyMessage.style.padding = "10px 20px";
+        copyMessage.style.backgroundColor = "#28a745";  // 綠色背景
+        copyMessage.style.color = "white";
+        copyMessage.style.borderRadius = "5px";
+        copyMessage.style.fontSize = "1rem";
+        copyMessage.style.zIndex = "1000";
+        copyMessage.style.display = "inline-block";
+        document.body.appendChild(copyMessage);
 
-    // 一秒後自動隱藏提示訊息
-    setTimeout(() => {
-        copyMessage.style.display = "none";
-    }, 1000);  // 一秒後消失
-}
+        // 一秒後自動隱藏提示訊息
+        setTimeout(() => {
+            copyMessage.style.display = "none";
+        }, 1000);  // 一秒後消失
+    }
         // 取得星期幾的名稱
     function getWeekdayName(date) {
         const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
         return weekdays[date.getDay()];
     }
 
-// 格式化日期為 "月/日" 的形式
-function formatDate(date) {
-    const month = date.getMonth() + 1;  // 月份是從 0 開始的，所以要加 1
-    const day = date.getDate();
-    return `${month}/${day}`;
-}
-        window.onload = () => {
+    // 格式化日期為 "月/日" 的形式
+    function formatDate(date) {
+        const month = date.getMonth() + 1;  // 月份是從 0 開始的，所以要加 1
+        const day = date.getDate();
+        return `${month}/${day}`;
+    }
+
+    window.onload = () => {
          setTodaysDate();  // Set today's date in the date input fields
          fetchData();      // Automatically fetch data when the page loads
-        };
+    };
          document.getElementById("fetchBtn").addEventListener("click", fetchData);
     </script>
 </body>
