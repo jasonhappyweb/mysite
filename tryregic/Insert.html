@@ -285,7 +285,7 @@
         <!-- 日期選擇器 -->
         <div class="form-group">
             <label for="date">日期</label>
-            <input type="date" id="date" name="date">
+            <input type="datetime-local" id="date" name="date">
         </div>
         <div class="button-container">
             <button id="submitBtn">新增</button>
@@ -315,7 +315,9 @@
             const year = today.getFullYear();
             const month = (today.getMonth() + 1).toString().padStart(2, '0');
             const day = today.getDate().toString().padStart(2, '0');
-            const formattedDate = `${year}-${month}-${day}`;
+            const hours = today.getHours().toString().padStart(2, '0');
+            const minutes = today.getMinutes().toString().padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
             
             document.getElementById('date').value = formattedDate;
         };
@@ -392,7 +394,7 @@
             showOverlay("新增中...");
 
             const payload = {
-                data: `新增/${name}/${people}/${times}/${talk}/${line}/${date.replace(/-/g, '/')}`,
+                data: `新增/${name}/${people}/${times}/${talk}/${line}/${date.replace(/-/g, '/').replace('T',' ')}`,
                 status: "active", // 預設為 active
             };
 
