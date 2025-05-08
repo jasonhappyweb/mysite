@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>福音紀錄上傳 App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Noto Sans TC', sans-serif;
+      background: linear-gradient(to right, #fdfcfb, #e2d1c3);
+      color: #333;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      color: #8e44ad;
+      margin-bottom: 30px;
+    }
+
+    .video-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    video {
+      width: 90vw;              /* 根據螢幕寬度自適應 */
+      max-width: 600px;         /* 最大寬度不超過 600px */
+      height: auto;
+      border: 6px solid #8e44ad;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+
+    .section {
+      background: white;
+      margin: 20px auto;
+      padding: 30px;
+      border-radius: 14px;
+      max-width: 850px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: left;
+    }
+
+    .section h2 {
+      color: #6c3483;
+      margin-bottom: 16px;
+    }
+
+    .section ul {
+      padding-left: 20px;
+      font-size: 1.1rem;
+    }
+
+    .section ul li {
+      margin-bottom: 8px;
+    }
+
+    .nav-btn {
+      display: inline-block;
+      margin: 20px 10px;
+      padding: 14px 30px;
+      font-size: 20px;
+      background-color: #8e44ad;
+      color: white;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: background 0.3s;
+    }
+
+    .nav-btn:hover {
+      background-color: #5e3370;
+    }
+  </style>
+</head>
+<body>
+  <h1>福音紀錄上傳 App Demo</h1>
+
+  <div class="video-container">
+    <video src="app.mp4" controls></video>
+  </div>
+
+  <div class="section">
+    <h2>技術使用</h2>
+    <ul>
+      <li>📱 Flutter + Dart 建構跨平台行動 App</li>
+      <li>🔗 與 Swagger 自動生成 API 對接</li>
+      <li>☁️ 資料上傳至雲端後台管理系統</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>應用情境</h2>
+    <ul>
+      <li>✅ 教會天天都有傳福音的行動教會會記錄每天有多少人傳福</li>
+      <li>✅ 自動統計傳福音的結果</li>
+    </ul>
+  </div>
+
+  <a class="nav-btn" href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81.html">⬅️ 上一頁</a>
+  <a class="nav-btn" href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1.html">下一頁 ➡️</a>
+</body>
+</html>
