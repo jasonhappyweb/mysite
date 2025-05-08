@@ -1,52 +1,120 @@
 <!DOCTYPE html>
-<html>
-    <!DOCTYPE html>
-<html>
-    <head>
-        <!--下面是網頁的編碼-->>
-        <meta charset="UTF-8"></meta>
-        <title>我的作品</title>
-    <body>
-    <!--github 密碼 Jason89904-->
-        <img src="abc.jpg" height="1000" width="1500">
-        <img src="bcd.jfif" height="1000" width="1500">
-        <img src="efg.jfif" height="1000" width="1500">
-        <div style="position: absolute; top:0px;">
-        <!--br換行 hr水平線 p文章內容 h1文章標題-->
-        <h1 style="padding-left: 200px;margin-top: 20px; margin-left: 400px; font-size: 80px;color: red;border: 5px solid white;background-color: rgb(63, 152, 152); width:500px;">my work</h1>
-        <h1 style="margin-top: 100px; margin-left: 670px;">第一個作品</h1>
-        <h1 style="margin-left: 680px;display: inline-block;color: red; border: 5px solid green;background-color: aqua;">吵架惡搞</h1>
-        <video style="margin-left: 400px;" src="吵架惡搞影片.mp4" width="750px" controls></video>
-        <a href="數位多媒體.pptx"><h1 style="margin-left: 420px;"> 影片ppt檔案</h1></a>
-       <div style="color: rgb(235, 112, 112); font-size: 20px;" >
-        <p style="margin-left: 380px; padding-left: 40px; border: 5px solid  green;background-color: rgb(74, 68, 228); width: 800px;font-size: 30px;">用video edictor 做的影片 大學數位多媒體的時候做的</p>
-        </div>
-        
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Och 管理系統 Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Noto Sans TC', sans-serif;
+      background: linear-gradient(to right, #f2f9ff, #e0f7fa);
+      color: #333;
+      padding: 40px 20px;
+      text-align: center;
+    }
 
-        <br/><hr/>
-        <div  style="position: absolute;left:500px; top:0px;">
-        <h1 style="margin-left: 150px; margin-top: 1100px;" >第二個作品</h1>
-        <h1 style="margin-left: 180px; color: red; border: 5px solid green;background-color: aqua; width: 100px; ">拉霸機</h1>
-        <video style="margin-left: 100px" src="拉霸機.mp4" width="300" controls></video>
-        <a href="拉霸機.pptx"><h1 style="margin-left: 100px;"> 拉霸機ppt檔案</h1></a>
-        <p style="padding-left: 20px; border: 5px solid red;background-color: rgb(151, 234, 234); margin-left: 0px; width: 500px; font-size: 30px; color:blue;">拉霸機 大學上行動網路裝置與應用時用android studio(flutter)做的</p>
-        </div>
-        <br/><hr/>
-        <div  style="position: absolute; top:2000px; left: 0px;">
-        <h1 style="margin-left: 670px; margin-top: 100px;">第三個作品</h1>
-        <h1 style="margin-left: 700px;display: inline-block;color: red; border: 5px solid green;background-color: aqua;">資料庫</h1>
-        <video style="margin-left: 500px;" src="資料庫.mp4" width="500px"  controls></video>
-       <a href="database.pptx"><h1 style="margin-left: 420px;"> 資料庫ppt檔案</h1></a>
-       
-       <p style="margin-left: 380px;padding-left: 40px; border: 5px solid  green;background-color: rgb(228, 68, 143); width: 800px;font-size: 30px;">在上database的時候做的期末專題也是用android studio(flutter)做的</p>
-       </div>
+    h1 {
+      font-size: 2.8rem;
+      color: #0077b6;
+      margin-bottom: 30px;
+    }
 
-       <div style="position: absolute; top:2900px; left: 500px;">
-        <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p2.html" style="width: 100px;"><h1 style="width: 400px; font-size: 60px;">下一頁</h1></a>
-        </div>
-        
-    </div> 
-    </body>
-    </head>
+    .video-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
 
+    video {
+      width: 750px;
+      border: 6px solid #0077b6;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .section {
+      background: white;
+      margin: 20px auto;
+      padding: 30px;
+      border-radius: 14px;
+      max-width: 850px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: left;
+    }
+
+    .section h2 {
+      color: #023e8a;
+      margin-bottom: 16px;
+    }
+
+    .section ul {
+      padding-left: 20px;
+      font-size: 1.1rem;
+    }
+
+    .section ul li {
+      margin-bottom: 8px;
+    }
+
+    .link-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 28px;
+      font-size: 1rem;
+      color: white;
+      background-color: #0077b6;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+
+    .link-btn:hover {
+      background-color: #023e8a;
+    }
+  </style>
+</head>
+<body>
+  <h1>Och 管理系統 Demo 展示</h1>
+
+  <div class="video-container">
+    <video src="och.mp4" controls></video>
+  </div>
+
+  <div class="section">
+    <h2>使用技術</h2>
+    <ul>
+      <li>✅ ASP.NET Core MVC 架構設計</li>
+      <li>✅ 前端整合 Bootstrap Modal、SweetAlert2、jQuery</li>
+      <li>✅ 後端資料存取：Entity Framework Core + Dapper</li>
+      <li>✅ 資料庫：PostgreSQL</li>
+      <li>✅ RESTful API 與 Swagger 文件</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>部署流程</h2>
+    <ul>
+      <li>📦 GitHub 儲存程式碼與自動推送版本</li>
+      <li>🐳 Docker 建立容器映像（Dockerfile）</li>
+      <li>☁️ Render 免費雲平台自動部署並運行</li>
+      <li>🔁 Webhook 整合 Make 自動接收外部資料並串接 Regic 系統</li>
+    </ul>
+  </div>
+  <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81.html" style="
+  display: inline-block;
+  margin-top: 30px;
+  padding: 15px 40px;
+  font-size: 24px;
+  color: white;
+  background-color: #28a745;
+  border: none;
+  border-radius: 10px;
+  text-decoration: none;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  transition: background 0.3s;
+">下一頁 ➡️</a>
+
+</body>
 </html>
