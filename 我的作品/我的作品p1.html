@@ -1,56 +1,139 @@
 <!DOCTYPE html>
-<html>
-    <!DOCTYPE html>
-<html>
-    <head>
-        <!--下面是網頁的編碼-->>
-        <meta charset="UTF-8"></meta>
-        <title>我的作品</title>
-    <body>
-    <!--github 密碼 Jason89904-->
-        <img src="abc.jpg" height="1000" width="1500">
-        <img src="bcd.jfif" height="1000" width="1500">
-        <img src="efg.jfif" height="1000" width="1500">
-        <div style="position: absolute; top:0px;">
-        <!--br換行 hr水平線 p文章內容 h1文章標題-->
-        <h1 style="padding-left: 200px;margin-top: 20px; margin-left: 400px; font-size: 80px;color: red;border: 5px solid white;background-color: rgb(63, 152, 152); width:500px;">my work</h1>
-        <h1 style="margin-top: 100px; margin-left: 670px;">第一個作品</h1>
-        <h1 style="margin-left: 680px;display: inline-block;color: red; border: 5px solid green;background-color: aqua;">吵架惡搞</h1>
-        <video style="margin-left: 400px;" src="吵架惡搞影片.mp4" width="750px" controls></video>
-        <a href="數位多媒體.pptx"><h1 style="margin-left: 420px;"> 影片ppt檔案</h1></a>
-       <div style="color: rgb(235, 112, 112); font-size: 20px;" >
-        <p style="margin-left: 380px; padding-left: 40px; border: 5px solid  green;background-color: rgb(74, 68, 228); width: 800px;font-size: 30px;">用video edictor 做的影片 大學數位多媒體的時候做的</p>
-        </div>
-        
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>我的作品</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    header {
+      text-align: center;
+      padding: 40px 0;
+      background-color: #3f9898;
+      color: white;
+    }
+    header h1 {
+      font-size: 64px;
+      border: 5px solid white;
+      display: inline-block;
+      padding: 10px 40px;
+      background-color: #3f9898;
+    }
+    section {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 20px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .title {
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .label {
+      font-size: 28px;
+      color: red;
+      background-color: aqua;
+      border: 3px solid green;
+      display: inline-block;
+      padding: 5px 20px;
+      margin-bottom: 20px;
+    }
+    .video {
+      display: block;
+      margin: 0 auto 20px;
+      border-radius: 10px;
+    }
+    .description {
+      font-size: 20px;
+      padding: 20px;
+      border: 3px solid green;
+      background-color: #e0f7fa;
+      margin-top: 10px;
+    }
+    .ppt-link {
+      display: block;
+      text-align: center;
+      font-size: 24px;
+      margin: 20px 0;
+      color: #007bff;
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      justify-content: space-around;
+      margin: 60px 0;
+    }
+    .nav-links a {
+      font-size: 32px;
+      text-decoration: none;
+      color: #0077b6;
+      background-color: #e3f2fd;
+      padding: 20px 40px;
+      border-radius: 10px;
+      border: 2px solid #0077b6;
+      transition: background-color 0.3s;
+    }
+    .nav-links a:hover {
+      background-color: #b3e5fc;
+    }
+    img {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
 
-        <br/><hr/>
-        <div  style="position: absolute;left:500px; top:0px;">
-        <h1 style="margin-left: 150px; margin-top: 1100px;" >第二個作品</h1>
-        <h1 style="margin-left: 180px; color: red; border: 5px solid green;background-color: aqua; width: 100px; ">拉霸機</h1>
-        <video style="margin-left: 100px" src="拉霸機.mp4" width="300" controls></video>
-        <a href="拉霸機.pptx"><h1 style="margin-left: 100px;"> 拉霸機ppt檔案</h1></a>
-        <p style="padding-left: 20px; border: 5px solid red;background-color: rgb(151, 234, 234); margin-left: 0px; width: 500px; font-size: 30px; color:blue;">拉霸機 大學上行動網路裝置與應用時用android studio(flutter)做的</p>
-        </div>
-        <br/><hr/>
-        <div  style="position: absolute; top:2000px; left: 0px;">
-        <h1 style="margin-left: 670px; margin-top: 100px;">第三個作品</h1>
-        <h1 style="margin-left: 700px;display: inline-block;color: red; border: 5px solid green;background-color: aqua;">資料庫</h1>
-        <video style="margin-left: 500px;" src="資料庫.mp4" width="500px"  controls></video>
-       <a href="database.pptx"><h1 style="margin-left: 420px;"> 資料庫ppt檔案</h1></a>
-       
-       <p style="margin-left: 380px;padding-left: 40px; border: 5px solid  green;background-color: rgb(228, 68, 143); width: 800px;font-size: 30px;">在上database的時候做的期末專題也是用android studio(flutter)做的</p>
-       </div>
+  <header>
+    <h1>my work</h1>
+  </header>
 
-       <div style="position: absolute; top:2900px; left: 100px;">
-        <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1_0.html" style="width: 100px;"><h1 style="width: 400px; font-size: 60px;">上一頁</h1></a>
-        </div>
-        
-       <div style="position: absolute; top:2900px; left: 500px;">
-        <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p2.html" style="width: 100px;"><h1 style="width: 400px; font-size: 60px;">下一頁</h1></a>
-        </div>
-        
-    </div> 
-    </body>
-    </head>
+  <section>
+    <h2 class="title">第一個作品</h2>
+    <div class="label">吵架惡搞</div>
+    <img src="abc.jpg" alt="作品圖片1">
+    <video class="video" src="吵架惡搞影片.mp4" width="750" controls></video>
+    <a class="ppt-link" href="數位多媒體.pptx">影片 PPT 檔案</a>
+    <div class="description">
+      用 Video Editor 做的影片，為大學數位多媒體課程作品。
+    </div>
+  </section>
 
+  <section>
+    <h2 class="title">第二個作品</h2>
+    <div class="label">拉霸機</div>
+    <img src="bcd.jfif" alt="作品圖片2">
+    <video class="video" src="拉霸機.mp4" width="500" controls></video>
+    <a class="ppt-link" href="拉霸機.pptx">拉霸機 PPT 檔案</a>
+    <div class="description" style="border-color: red; background-color: #d0faff;">
+      使用 Android Studio (Flutter) 製作的拉霸機遊戲，為行動網路裝置與應用課程作品。
+    </div>
+  </section>
+
+  <section>
+    <h2 class="title">第三個作品</h2>
+    <div class="label">資料庫</div>
+    <img src="efg.jfif" alt="作品圖片3">
+    <video class="video" src="資料庫.mp4" width="600" controls></video>
+    <a class="ppt-link" href="database.pptx">資料庫 PPT 檔案</a>
+    <div class="description" style="background-color: #f8bbd0;">
+      在上 Database 課時製作的期末專題，使用 Android Studio (Flutter) 開發。
+    </div>
+  </section>
+
+  <div class="nav-links">
+    <a href="https://jasonhappyweb.github.io/mysite/我的作品/我的作品p1_0.html">上一頁</a>
+    <a href="https://jasonhappyweb.github.io/mysite/我的作品/我的作品p2.html">下一頁</a>
+  </div>
+
+</body>
 </html>
