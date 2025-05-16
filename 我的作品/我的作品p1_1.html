@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>Line Bot 報名系統展示</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f8fa;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #2c7be5;
+      margin-bottom: 30px;
+    }
+    .carousel-container {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .carousel-slide {
+      display: none;
+    }
+    .carousel-slide.active {
+      display: block;
+    }
+    .carousel-slide img {
+      width: 100%;
+      height: 400px;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+    }
+    .caption {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 1rem;
+    }
+    .nav-buttons {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .nav-buttons button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      font-size: 1rem;
+      background-color: #2c7be5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .slide-indicator {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 1rem;
+      color: #666;
+    }
+    .tech-stack {
+      max-width: 800px;
+      margin: 50px auto 0;
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .tech-stack h2 {
+      color: #2c7be5;
+      margin-bottom: 10px;
+    }
+    .tech-stack ul {
+      padding-left: 20px;
+    }
+  .nav-button {
+    display: inline-block;
+    margin: 0 10px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+
+  .nav-button.back {
+    background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+    color: #003366;
+  }
+
+  .nav-button.next {
+    background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+    color: #4a004a;
+  }
+
+  .nav-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    opacity: 0.9;
+  }
+  </style>
+</head>
+<body>
+
+  <h1>Line Bot 自動報名系統展示</h1>
+
+  <div class="carousel-container">
+    <div class="carousel-slide active">
+      <img src="LineDemo1.png" alt="報名訊息">
+      <div class="caption">📩 使用者輸入代碼 → 自動回應「報名」提示 → 系統 API 接收 Line ID 與名稱</div>
+    </div>
+    <div class="carousel-slide">
+      <img src="LineDemo2.png" alt="報名成功畫面">
+      <div class="caption">✅ 報名成功畫面：顯示使用者資訊與報名狀態，記錄時間與費用</div>
+    </div>
+    <div class="carousel-slide">
+      <img src="LineDemo3.png" alt="自動提醒繳費">
+      <div class="caption">⏰ 活動前自動提醒：Hangfire 定時推播提醒使用者繳費</div>
+    </div>
+    <div class="carousel-slide">
+      <img src="LineDemo4.png" alt="繳費完成更新畫面">
+      <div class="caption">💵 使用者完成繳費後，系統自動更新狀態為「已繳交」</div>
+    </div>
+  </div>
+
+  <div class="slide-indicator" id="slideIndicator">第 1 張 / 共 4 張</div>
+
+  <div class="nav-buttons">
+    <button onclick="changeSlide(-1)">上一頁</button>
+    <button onclick="changeSlide(1)">上一頁</button>
+  </div>
+
+  <div class="tech-stack">
+    <h2>🛠️ 使用技術</h2>
+    <ul>
+      <li>🔗 LINE Messaging API</li>
+      <li>📅 Hangfire 任務排程（結合 PostgreSQL）</li>
+      <li>🌐 ASP.NET Core MVC 架構</li>
+      <li>🗄️ PostgreSQL 資料庫</li>
+      <li>☁️ Render 雲端部署</li>
+      <li>📦 GitHub 專案管理與 CI/CD</li>
+    </ul>
+  </div>
+<div style="text-align: center; margin-bottom: 30px;">
+  <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1_0.html" class="nav-button back">◀ 上一個作品</a>
+  <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1.html" class="nav-button next">下一個作品 ▶</a>
+</div>
+  <script>
+    let currentIndex = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const slideIndicator = document.getElementById('slideIndicator');
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+      slideIndicator.innerText = `第 ${index + 1} 張 / 共 ${slides.length} 張`;
+    }
+
+    function changeSlide(n) {
+      currentIndex = (currentIndex + n + slides.length) % slides.length;
+      showSlide(currentIndex);
+    }
+
+    // 初始化頁碼
+    showSlide(currentIndex);
+  </script>
+
+</body>
+</html>
