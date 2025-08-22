@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>隨機經文盲抽</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Noto Sans TC', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1600&q=80') no-repeat center center/cover;
+      color: #fff;
+      text-align: center;
+    }
+    .card {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 2rem;
+      border-radius: 1.5rem;
+      max-width: 500px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 9999px;
+      background: #f0f0f0;
+      color: #333;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #ddd;
+    }
+    .verse {
+      font-size: 1.2rem;
+      line-height: 1.8rem;
+    }
+    .ref {
+      margin-top: 1rem;
+      font-size: 1rem;
+      font-style: italic;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div id="verse" class="verse">按下按鈕，抽取今天的經文</div>
+    <div id="ref" class="ref"></div>
+    <button onclick="getVerse()">抽經文</button>
+  </div>  <script>
+    const verses = [
+      { text: "耶和華是我的牧者，我必不致缺乏。", ref: "詩篇 23:1" },
+      { text: "你要專心仰賴耶和華，不可倚靠自己的聰明。", ref: "箴言 3:5" },
+      { text: "我靠著那加給我力量的，凡事都能做。", ref: "腓立比書 4:13" },
+      { text: "神愛世人，甚至將他的獨生子賜給他們。", ref: "約翰福音 3:16" },
+      { text: "主耶和華是我的力量；他使我的腳快如母鹿的蹄。", ref: "哈巴谷書 3:19" },
+      { text: "凡勞苦擔重擔的人，可以到我這裡來，我就使你們得安息。", ref: "馬太福音 11:28" },
+      { text: "應當一無掛慮，只要凡事藉著禱告祈求和感謝，將你們所要的告訴神。", ref: "腓立比書 4:6" }
+    ];
+
+    function getVerse() {
+      const random = verses[Math.floor(Math.random() * verses.length)];
+      document.getElementById('verse').innerText = random.text;
+      document.getElementById('ref').innerText = random.ref;
+    }
+  </script></body>
+</html>
