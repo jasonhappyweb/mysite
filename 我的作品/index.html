@@ -419,6 +419,31 @@
     }
     .contact-phone:hover { border-color: rgba(0,212,255,0.5); color: var(--c2); transform: translateY(-3px); }
 
+    .line-qr-wrap {
+      margin-top: 36px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+    }
+    .line-qr-label {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.85rem; color: var(--muted);
+    }
+    .line-icon {
+      background: #06C755; color: white;
+      font-size: 0.7rem; font-weight: 800; letter-spacing: 1px;
+      padding: 3px 8px; border-radius: 6px;
+    }
+    .line-qr-card {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      padding: 16px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(6,199,85,0.25);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .line-qr-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(6,199,85,0.35); }
+    .line-qr-hint { font-size: 0.75rem; color: #06C755; font-weight: 600; }
+
     footer {
       position: relative; z-index: 1;
       border-top: 1px solid var(--border);
@@ -701,6 +726,17 @@
         <a href="mailto:jason890904@gmail.com" class="contact-email">✉️ jason890904@gmail.com</a>
         <a href="tel:0912206305" class="contact-phone">📞 0912-206-305</a>
       </div>
+
+      <div class="line-qr-wrap">
+        <div class="line-qr-label">
+          <span class="line-icon">LINE</span>
+          掃描加我好友
+        </div>
+        <a href="https://line.me/ti/p/gRdnq0mqbT" target="_blank" class="line-qr-card">
+          <div id="qrcode"></div>
+          <div class="line-qr-hint">點擊或掃描</div>
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -786,6 +822,21 @@
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
   }, { threshold: 0.12 });
   els.forEach(el => io.observe(el));
+})();
+
+/* ── LINE QR Code ── */
+(function() {
+  const url = 'https://line.me/ti/p/gRdnq0mqbT';
+  const el = document.getElementById('qrcode');
+  const img = document.createElement('img');
+  img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' + encodeURIComponent(url) + '&color=06C755&bgcolor=ffffff&margin=6';
+  img.alt = 'LINE QR Code';
+  img.width = 160; img.height = 160;
+  img.style.cssText = 'display:block;border-radius:8px;';
+  img.onerror = function() {
+    img.src = 'https://chart.googleapis.com/chart?chs=160x160&cht=qr&chl=' + encodeURIComponent(url);
+  };
+  el.appendChild(img);
 })();
 
 /* ── Counter animation ── */
