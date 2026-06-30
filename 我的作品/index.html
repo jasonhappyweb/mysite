@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jason Hsu | 全端開發工程師</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Variables ── */
+    :root {
+      --bg:       #04080f;
+      --bg2:      #080e1d;
+      --border:   rgba(255,255,255,0.07);
+      --c1: #6c63ff;
+      --c2: #00d4ff;
+      --c3: #ff6b9d;
+      --c4: #00c97a;
+      --c5: #f59e0b;
+      --text:     #e8edf5;
+      --muted:    #7a8394;
+      --r: 16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans TC', 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── Canvas Stars ── */
+    #stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    /* ── Grid overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(108,99,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
+      background-size: 70px 70px;
+      pointer-events: none;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      background: rgba(4,8,15,0.75);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-size: 1.1rem; font-weight: 800; letter-spacing: 1px;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      font-size: 0.85rem; color: var(--muted); text-decoration: none;
+      letter-spacing: 0.5px; transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      padding: 8px 20px;
+      border: 1px solid rgba(108,99,255,0.5);
+      border-radius: 100px;
+      font-size: 0.82rem; font-weight: 600;
+      color: var(--c1); text-decoration: none;
+      transition: all 0.3s;
+    }
+    .nav-cta:hover { background: rgba(108,99,255,0.12); color: var(--c1); }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 80px 24px 60px;
+      text-align: center;
+    }
+
+    /* Glow blobs */
+    .glow {
+      position: absolute; border-radius: 50%;
+      filter: blur(100px); pointer-events: none; opacity: 0;
+      animation: glowIn 2s forwards;
+    }
+    @keyframes glowIn { to { opacity: 0.18; } }
+    .g1 { width: 700px; height: 700px; background: var(--c1); top: -200px; left: -200px; animation-delay: 0.3s; }
+    .g2 { width: 500px; height: 500px; background: var(--c2); bottom: -100px; right: -100px; animation-delay: 0.6s; }
+    .g3 { width: 300px; height: 300px; background: var(--c3); top: 40%; left: 60%; animation-delay: 0.9s; }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 18px;
+      border: 1px solid rgba(108,99,255,0.35);
+      background: rgba(108,99,255,0.08);
+      border-radius: 100px;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 2px;
+      color: var(--c1); text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0; animation: slideDown 0.8s 0.5s forwards;
+    }
+    .hero-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--c1); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+
+    .hero-name {
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900; line-height: 1;
+      letter-spacing: -3px;
+      margin-bottom: 4px;
+      opacity: 0; animation: slideDown 0.9s 0.7s forwards;
+    }
+    .hero-name span {
+      background: linear-gradient(135deg, var(--c1) 0%, var(--c2) 50%, var(--c3) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .hero-title-row {
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      font-weight: 300; color: var(--muted);
+      letter-spacing: 2px; margin-bottom: 28px;
+      min-height: 2em;
+      opacity: 0; animation: slideDown 0.9s 0.9s forwards;
+    }
+    .typed-text { color: var(--c2); font-weight: 500; }
+    .cursor { display: inline-block; width: 2px; height: 1.1em; background: var(--c2); margin-left: 3px; vertical-align: middle; animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .hero-desc {
+      font-size: 1.05rem; color: var(--muted); max-width: 560px;
+      line-height: 1.9; margin: 0 auto 44px;
+      opacity: 0; animation: slideDown 0.9s 1.1s forwards;
+    }
+
+    .hero-btns {
+      display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+      opacity: 0; animation: slideDown 0.9s 1.3s forwards;
+    }
+    .btn-main {
+      padding: 15px 36px;
+      background: linear-gradient(135deg, var(--c1), #8b5cf6);
+      color: white; border: none; border-radius: 100px;
+      font-size: 0.95rem; font-weight: 700; letter-spacing: 0.5px;
+      cursor: pointer; text-decoration: none;
+      box-shadow: 0 0 0 0 rgba(108,99,255,0.5);
+      animation: ripple 3s 2s infinite;
+      transition: transform 0.3s;
+    }
+    .btn-main:hover { transform: translateY(-3px); }
+    @keyframes ripple {
+      0%   { box-shadow: 0 0 0 0 rgba(108,99,255,0.5); }
+      70%  { box-shadow: 0 0 0 18px rgba(108,99,255,0); }
+      100% { box-shadow: 0 0 0 0 rgba(108,99,255,0); }
+    }
+    .btn-ghost {
+      padding: 15px 36px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted); border-radius: 100px;
+      font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      transition: all 0.3s;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.2); color: var(--text); transform: translateY(-3px); }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--muted); font-size: 0.75rem; letter-spacing: 2px;
+      opacity: 0; animation: fadeIn 1s 2.5s forwards;
+    }
+    .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--c1), transparent); animation: scrollPulse 2s infinite; }
+    @keyframes scrollPulse { 0%,100%{opacity:0.4;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.1)} }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes slideDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ── Stats Bar ── */
+    .stats-bar {
+      position: relative; z-index: 1;
+      max-width: 900px; margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+    .stats-inner {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 20px; overflow: hidden;
+    }
+    .stat-item {
+      background: rgba(255,255,255,0.03);
+      padding: 28px 24px; text-align: center;
+      transition: background 0.3s;
+    }
+    .stat-item:hover { background: rgba(108,99,255,0.06); }
+    .stat-num {
+      font-size: 2.2rem; font-weight: 900; line-height: 1;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 6px; letter-spacing: 1px; }
+
+    /* ── Section ── */
+    section { position: relative; z-index: 1; }
+    .section-header {
+      text-align: center; padding: 80px 24px 50px;
+    }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 16px;
+      background: rgba(108,99,255,0.08); border: 1px solid rgba(108,99,255,0.2);
+      border-radius: 100px; font-size: 0.75rem; font-weight: 600;
+      color: var(--c1); letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800; letter-spacing: -1px;
+      margin-bottom: 14px;
+    }
+    .section-title em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .section-sub { font-size: 1rem; color: var(--muted); line-height: 1.8; }
+
+    /* ── Projects Grid ── */
+    .projects-grid {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 24px 100px;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: auto;
+      gap: 20px;
+    }
+
+    /* Featured project — big card */
+    .proj-card {
+      border-radius: 22px; overflow: hidden;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.025);
+      backdrop-filter: blur(10px);
+      cursor: pointer; position: relative;
+      transition: transform 0.4s cubic-bezier(0.23,1,0.32,1),
+                  border-color 0.4s, box-shadow 0.4s;
+      text-decoration: none; color: inherit;
+      display: flex; flex-direction: column;
+    }
+    .proj-card:hover { transform: translateY(-8px); }
+
+    .p1 { grid-column: span 7; }
+    .p2 { grid-column: span 5; }
+    .p3 { grid-column: span 4; }
+    .p4 { grid-column: span 4; }
+    .p5 { grid-column: span 4; }
+
+    /* Accent glow per card */
+    .p1:hover { border-color: rgba(108,99,255,0.4); box-shadow: 0 30px 60px rgba(108,99,255,0.15), inset 0 0 60px rgba(108,99,255,0.03); }
+    .p2:hover { border-color: rgba(168,85,247,0.4); box-shadow: 0 30px 60px rgba(168,85,247,0.15), inset 0 0 60px rgba(168,85,247,0.03); }
+    .p3:hover { border-color: rgba(0,201,122,0.4); box-shadow: 0 30px 60px rgba(0,201,122,0.15), inset 0 0 60px rgba(0,201,122,0.03); }
+    .p4:hover { border-color: rgba(245,158,11,0.4); box-shadow: 0 30px 60px rgba(245,158,11,0.15), inset 0 0 60px rgba(245,158,11,0.03); }
+    .p5:hover { border-color: rgba(6,182,212,0.4); box-shadow: 0 30px 60px rgba(6,182,212,0.15), inset 0 0 60px rgba(6,182,212,0.03); }
+
+    /* Top accent line */
+    .card-line {
+      height: 3px; flex-shrink: 0;
+    }
+    .line-c1 { background: linear-gradient(90deg, var(--c1), var(--c2)); }
+    .line-c2 { background: linear-gradient(90deg, #a855f7, #ec4899); }
+    .line-c3 { background: linear-gradient(90deg, var(--c4), var(--c2)); }
+    .line-c4 { background: linear-gradient(90deg, var(--c5), #ef4444); }
+    .line-c5 { background: linear-gradient(90deg, #06b6d4, #3b82f6); }
+
+    /* Media area */
+    .card-media {
+      width: 100%; background: #060c1a; overflow: hidden;
+      position: relative; flex-shrink: 0;
+    }
+    .card-media img { width: 100%; height: 220px; object-fit: cover; display: block; transition: transform 0.6s; }
+    .proj-card:hover .card-media img { transform: scale(1.06); }
+    .card-media.tall img { height: 300px; }
+
+    /* Video overlay */
+    .play-overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(4,8,15,0.4);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .proj-card:hover .play-overlay { opacity: 1; }
+    .play-btn {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      transform: scale(0.8); transition: transform 0.3s;
+    }
+    .proj-card:hover .play-btn { transform: scale(1); }
+
+    /* Card body */
+    .card-body {
+      padding: 24px 26px; flex: 1;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .card-meta { display: flex; align-items: center; justify-content: space-between; }
+    .card-num-badge {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+      color: var(--muted); text-transform: uppercase;
+    }
+    .card-category {
+      font-size: 0.72rem; font-weight: 600; padding: 3px 10px;
+      border-radius: 100px; letter-spacing: 0.5px;
+    }
+    .cat-c1 { background: rgba(108,99,255,0.12); color: #a5b4fc; border: 1px solid rgba(108,99,255,0.2); }
+    .cat-c2 { background: rgba(168,85,247,0.12); color: #d8b4fe; border: 1px solid rgba(168,85,247,0.2); }
+    .cat-c3 { background: rgba(0,201,122,0.1); color: #6ee7b7; border: 1px solid rgba(0,201,122,0.2); }
+    .cat-c4 { background: rgba(245,158,11,0.1); color: #fcd34d; border: 1px solid rgba(245,158,11,0.2); }
+    .cat-c5 { background: rgba(6,182,212,0.1); color: #67e8f9; border: 1px solid rgba(6,182,212,0.2); }
+
+    .card-title-text {
+      font-size: 1.3rem; font-weight: 700;
+      line-height: 1.25; letter-spacing: -0.3px;
+    }
+    .card-desc-text {
+      font-size: 0.85rem; color: var(--muted); line-height: 1.75;
+      flex: 1;
+    }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .tag {
+      font-size: 0.72rem; padding: 3px 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 6px; color: var(--muted);
+    }
+    .card-arrow {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; font-weight: 600; color: var(--muted);
+      margin-top: 10px; transition: all 0.3s;
+    }
+    .proj-card:hover .card-arrow { color: var(--text); gap: 10px; }
+    .arrow-icon { transition: transform 0.3s; }
+    .proj-card:hover .arrow-icon { transform: translateX(4px); }
+
+    /* ── Skills ── */
+    .skills-section {
+      max-width: 1000px; margin: 0 auto;
+      padding: 0 24px 100px;
+    }
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+    .skill-chip {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      padding: 18px 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      font-size: 0.8rem; color: var(--muted);
+      transition: all 0.3s; text-align: center;
+    }
+    .skill-chip:hover { border-color: rgba(108,99,255,0.35); background: rgba(108,99,255,0.06); color: var(--text); transform: translateY(-3px); }
+    .skill-icon { font-size: 1.6rem; }
+
+    /* ── Contact / Footer ── */
+    .contact-section {
+      max-width: 800px; margin: 0 auto;
+      padding: 0 24px 120px;
+      text-align: center;
+    }
+    .contact-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 28px; padding: 60px 40px;
+      position: relative; overflow: hidden;
+    }
+    .contact-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(108,99,255,0.06), rgba(0,212,255,0.04));
+      pointer-events: none;
+    }
+    .contact-card::after {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 200px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--c1), transparent);
+    }
+    .contact-emoji { font-size: 3rem; margin-bottom: 16px; }
+    .contact-title { font-size: 2rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -1px; }
+    .contact-sub { color: var(--muted); margin-bottom: 36px; line-height: 1.8; }
+    .contact-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .contact-email {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 36px;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      color: white; border-radius: 100px;
+      font-size: 0.95rem; font-weight: 700;
+      text-decoration: none; letter-spacing: 0.5px;
+      box-shadow: 0 12px 35px rgba(108,99,255,0.4);
+      transition: all 0.3s;
+    }
+    .contact-email:hover { transform: translateY(-3px); box-shadow: 0 20px 50px rgba(108,99,255,0.5); }
+    .contact-phone {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 36px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text); border-radius: 100px;
+      font-size: 0.95rem; font-weight: 600;
+      text-decoration: none; letter-spacing: 0.5px;
+      transition: all 0.3s;
+    }
+    .contact-phone:hover { border-color: rgba(0,212,255,0.5); color: var(--c2); transform: translateY(-3px); }
+
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 28px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--muted); font-size: 0.8rem;
+    }
+
+    /* ── Scroll reveal ── */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.7s cubic-bezier(0.23,1,0.32,1), transform 0.7s cubic-bezier(0.23,1,0.32,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .p1, .p2, .p3, .p4, .p5 { grid-column: span 12; }
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      footer { flex-direction: column; gap: 12px; text-align: center; }
+      .stats-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .hero-name { letter-spacing: -2px; }
+      .contact-card { padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<!-- Nav -->
+<nav>
+  <div class="logo">Jason.dev</div>
+  <div class="nav-links">
+    <a href="#projects">作品</a>
+    <a href="#skills">技術</a>
+    <a href="#contact">聯絡</a>
+  </div>
+  <a href="#contact" class="nav-cta">聯絡我</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="glow g3"></div>
+
+  <div class="hero-eyebrow">全端開發工程師</div>
+  <h1 class="hero-name"><span>Jason Hsu</span></h1>
+  <div class="hero-title-row">
+    <span class="typed-text" id="typed"></span><span class="cursor"></span>
+  </div>
+  <p class="hero-desc">
+    熱愛將想法轉化為產品，從後端 API 設計、雲端部署到行動 App 開發，<br>
+    每一行程式碼都是對問題的解答。
+  </p>
+  <div class="hero-btns">
+    <a href="#projects" class="btn-main">查看作品集 ↓</a>
+    <a href="#contact" class="btn-ghost">與我聯絡</a>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>SCROLL</span>
+  </div>
+</section>
+
+<!-- Stats -->
+<div class="stats-bar reveal" id="stats">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-num" data-target="5">0</div>
+      <div class="stat-label">完整作品</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="10">0</div>
+      <div class="stat-label">技術棧</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="3">0</div>
+      <div class="stat-label">雲端部署</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="2">0</div>
+      <div class="stat-label">跨平台 App</div>
+    </div>
+  </div>
+</div>
+
+<!-- Projects -->
+<section id="projects">
+  <div class="section-header">
+    <div class="section-tag">Portfolio</div>
+    <h2 class="section-title">我的<em>作品集</em></h2>
+    <p class="section-sub">從企業管理系統到 AR 畢業專題，每個作品都解決了真實問題。</p>
+  </div>
+
+  <div class="projects-grid">
+
+    <!-- 01 Och -->
+    <a href="我的作品.html" class="proj-card p1 reveal reveal-delay-1">
+      <div class="card-line line-c1"></div>
+      <div class="card-media tall">
+        <img src="hij.jpg" alt="Och 管理系統" onerror="this.style.background='linear-gradient(135deg,#0d1530,#1a1040)';this.style.height='300px';this.removeAttribute('src')">
+        <div class="play-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-num-badge">Project 01</span>
+          <span class="card-category cat-c1">後端系統</span>
+        </div>
+        <div class="card-title-text">Och 企業管理系統</div>
+        <div class="card-desc-text">
+          完整的企業後台管理系統，整合 ASP.NET Core MVC 架構、PostgreSQL 資料庫，並透過 Docker + Render 實現自動化雲端部署。
+        </div>
+        <div class="card-tags">
+          <span class="tag">ASP.NET Core</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">Docker</span>
+          <span class="tag">Swagger</span>
+          <span class="tag">Render</span>
+        </div>
+        <div class="card-arrow">查看詳情 <span class="arrow-icon">→</span></div>
+      </div>
+    </a>
+
+    <!-- 02 福音 App -->
+    <a href="我的作品p1_0.html" class="proj-card p2 reveal reveal-delay-2">
+      <div class="card-line line-c2"></div>
+      <div class="card-media">
+        <img src="klm.jpg" alt="福音 App" onerror="this.style.background='linear-gradient(135deg,#130d25,#1a0a30)';this.style.height='220px';this.removeAttribute('src')">
+        <div class="play-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-num-badge">Project 02</span>
+          <span class="card-category cat-c2">行動 App</span>
+        </div>
+        <div class="card-title-text">福音紀錄上傳 App</div>
+        <div class="card-desc-text">
+          Flutter 跨平台行動應用，對接後台 Swagger API，讓教會即時統計傳福音資料並上雲端。
+        </div>
+        <div class="card-tags">
+          <span class="tag">Flutter</span>
+          <span class="tag">Dart</span>
+          <span class="tag">Swagger API</span>
+        </div>
+        <div class="card-arrow">查看詳情 <span class="arrow-icon">→</span></div>
+      </div>
+    </a>
+
+    <!-- 03 Line Bot -->
+    <a href="我的作品p1_1.html" class="proj-card p3 reveal reveal-delay-1">
+      <div class="card-line line-c3"></div>
+      <div class="card-media">
+        <img src="LineDemo1.png" alt="Line Bot" style="object-fit:contain;background:#080f20;">
+        <div class="play-overlay"><div class="play-btn">📸</div></div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-num-badge">Project 03</span>
+          <span class="card-category cat-c3">自動化</span>
+        </div>
+        <div class="card-title-text">Line Bot 自動報名系統</div>
+        <div class="card-desc-text">
+          LINE Messaging API + Hangfire 排程，實現自動報名確認與繳費定時提醒。
+        </div>
+        <div class="card-tags">
+          <span class="tag">LINE API</span>
+          <span class="tag">Hangfire</span>
+          <span class="tag">Webhook</span>
+        </div>
+        <div class="card-arrow">查看詳情 <span class="arrow-icon">→</span></div>
+      </div>
+    </a>
+
+    <!-- 04 大學作品 -->
+    <a href="我的作品p1.html" class="proj-card p4 reveal reveal-delay-2">
+      <div class="card-line line-c4"></div>
+      <div class="card-media">
+        <img src="bcd.jfif" alt="大學作品" onerror="this.style.background='linear-gradient(135deg,#1a1000,#200800)';this.style.height='220px';this.removeAttribute('src')">
+        <div class="play-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-num-badge">Project 04</span>
+          <span class="card-category cat-c4">大學課程</span>
+        </div>
+        <div class="card-title-text">大學課程三件作品</div>
+        <div class="card-desc-text">
+          吵架惡搞影片、Flutter 拉霸機遊戲、資料庫期末專題。
+        </div>
+        <div class="card-tags">
+          <span class="tag">Flutter</span>
+          <span class="tag">Video Editor</span>
+          <span class="tag">Database</span>
+        </div>
+        <div class="card-arrow">查看詳情 <span class="arrow-icon">→</span></div>
+      </div>
+    </a>
+
+    <!-- 05 畢業專題 -->
+    <a href="我的作品p2.html" class="proj-card p5 reveal reveal-delay-3">
+      <div class="card-line line-c5"></div>
+      <div class="card-media">
+        <img src="mno.jpg" alt="畢業專題" onerror="this.style.background='linear-gradient(135deg,#020f1a,#061525)';this.style.height='220px';this.removeAttribute('src')">
+        <div class="play-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-num-badge">Project 05</span>
+          <span class="card-category cat-c5">AR 專題</span>
+        </div>
+        <div class="card-title-text">組裝家具 AR 教學</div>
+        <div class="card-desc-text">
+          掃描圖片即呈現家具 3D 動畫，Unity + AR Foundation 畢業專題。
+        </div>
+        <div class="card-tags">
+          <span class="tag">Unity</span>
+          <span class="tag">AR Foundation</span>
+          <span class="tag">3D 動畫</span>
+        </div>
+        <div class="card-arrow">查看詳情 <span class="arrow-icon">→</span></div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- Skills -->
+<section id="skills">
+  <div class="section-header reveal">
+    <div class="section-tag">Tech Stack</div>
+    <h2 class="section-title">技術<em>能力</em></h2>
+    <p class="section-sub">掌握從前後端到雲端部署的完整開發流程。</p>
+  </div>
+  <div class="skills-section reveal">
+    <div class="skills-grid">
+      <div class="skill-chip reveal-delay-1"><div class="skill-icon">⚙️</div>ASP.NET Core</div>
+      <div class="skill-chip reveal-delay-1"><div class="skill-icon">🐘</div>PostgreSQL</div>
+      <div class="skill-chip reveal-delay-2"><div class="skill-icon">📱</div>Flutter</div>
+      <div class="skill-chip reveal-delay-2"><div class="skill-icon">🐳</div>Docker</div>
+      <div class="skill-chip reveal-delay-3"><div class="skill-icon">☁️</div>Render</div>
+      <div class="skill-chip reveal-delay-3"><div class="skill-icon">🔗</div>LINE API</div>
+      <div class="skill-chip reveal-delay-4"><div class="skill-icon">📦</div>GitHub CI/CD</div>
+      <div class="skill-chip reveal-delay-4"><div class="skill-icon">🌐</div>RESTful API</div>
+      <div class="skill-chip reveal-delay-5"><div class="skill-icon">🎮</div>Unity / AR</div>
+      <div class="skill-chip reveal-delay-5"><div class="skill-icon">🔁</div>Webhook / Make</div>
+      <div class="skill-chip reveal-delay-5"><div class="skill-icon">🗃️</div>SQL Server</div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="section-header reveal">
+    <div class="section-tag">Contact</div>
+    <h2 class="section-title">一起<em>合作</em></h2>
+  </div>
+  <div class="contact-section reveal">
+    <div class="contact-card">
+      <div class="contact-emoji">🚀</div>
+      <div class="contact-title">歡迎與我聯繫</div>
+      <div class="contact-sub">
+        無論是工作機會、合作提案，或只是想聊聊技術，<br>我都很期待聽到你的消息。
+      </div>
+      <div class="contact-btns">
+        <a href="mailto:jason890904@gmail.com" class="contact-email">✉️ jason890904@gmail.com</a>
+        <a href="tel:0912206305" class="contact-phone">📞 0912-206-305</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 Jason Hsu. All rights reserved.</span>
+  <span>Built with ❤️ and pure HTML</span>
+</footer>
+
+<script>
+/* ── Stars canvas ── */
+(function() {
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function init() {
+    stars = [];
+    for (let i = 0; i < 180; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.2 + 0.2,
+        o: Math.random() * 0.6 + 0.1,
+        s: Math.random() * 0.3 + 0.05,
+        d: Math.random() > 0.5 ? 1 : -1
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      s.o += s.s * 0.01 * s.d;
+      if (s.o > 0.8 || s.o < 0.05) s.d *= -1;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(180,190,255,${s.o})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', () => { resize(); init(); });
+  resize(); init(); draw();
+})();
+
+/* ── Typed text ── */
+(function() {
+  const lines = [
+    '全端 Web 開發',
+    '行動 App 工程師',
+    'Flutter Developer',
+    'Cloud & API 整合',
+    'ASP.NET Core 開發'
+  ];
+  let li = 0, ci = 0, deleting = false;
+  const el = document.getElementById('typed');
+  function type() {
+    const cur = lines[li];
+    if (!deleting) {
+      el.textContent = cur.slice(0, ++ci);
+      if (ci === cur.length) { deleting = true; setTimeout(type, 1800); return; }
+      setTimeout(type, 80);
+    } else {
+      el.textContent = cur.slice(0, --ci);
+      if (ci === 0) { deleting = false; li = (li + 1) % lines.length; setTimeout(type, 400); return; }
+      setTimeout(type, 40);
+    }
+  }
+  setTimeout(type, 1500);
+})();
+
+/* ── Scroll reveal ── */
+(function() {
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(el => io.observe(el));
+})();
+
+/* ── Counter animation ── */
+(function() {
+  const nums = document.querySelectorAll('.stat-num[data-target]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const el = e.target;
+        const target = +el.dataset.target;
+        let cur = 0;
+        const step = target / 40;
+        const t = setInterval(() => {
+          cur += step;
+          if (cur >= target) { el.textContent = target + '+'; clearInterval(t); }
+          else el.textContent = Math.floor(cur);
+        }, 40);
+        io.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  nums.forEach(n => io.observe(n));
+})();
+</script>
+
+</body>
+</html>
