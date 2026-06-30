@@ -3,124 +3,213 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>我的作品2</title>
+  <title>Jason 作品集 | 教會 App & 畢業專題</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Noto Sans TC', sans-serif;
-      background-color: #f4f8fb;
-      color: #333;
+    :root {
+      --bg: #070d1f;
+      --card: rgba(255,255,255,0.04);
+      --card-border: rgba(255,255,255,0.08);
+      --accent1: #06b6d4;
+      --accent2: #3b82f6;
+      --accent3: #8b5cf6;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --radius: 16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans TC', 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(6,182,212,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,0.025) 1px, transparent 1px);
+      background-size: 60px 60px; pointer-events: none; z-index: 0;
+    }
+    .blob { position: fixed; border-radius: 50%; filter: blur(140px); pointer-events: none; z-index: 0; opacity: 0.12; }
+    .blob1 { width: 500px; height: 500px; background: var(--accent1); top: -100px; left: -100px; }
+    .blob2 { width: 500px; height: 500px; background: var(--accent3); bottom: -100px; right: -100px; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px; background: rgba(7,13,31,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--card-border);
+    }
+    .nav-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, var(--accent1), var(--accent3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-steps { display: flex; gap: 6px; align-items: center; }
+    .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: all 0.3s; }
+    .nav-dot.active { background: var(--accent1); box-shadow: 0 0 10px var(--accent1); width: 24px; border-radius: 4px; }
+
+    .hero {
+      position: relative; z-index: 1;
+      padding: 120px 24px 50px; text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.3);
+      border-radius: 100px; font-size: 0.8rem; color: var(--accent1);
+      margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .hero-badge::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+    .hero h1 { font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 700; line-height: 1.1; margin-bottom: 14px; letter-spacing: -1px; }
+    .hero h1 span { background: linear-gradient(135deg, var(--accent1), var(--accent3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero p { font-size: 1rem; color: var(--muted); max-width: 500px; margin: 0 auto; line-height: 1.8; }
+
+    /* Dual layout */
+    .projects {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 50px auto 0;
+      padding: 0 24px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 28px;
     }
 
-    header img {
-      width: 100%;
-      max-height: 500px;
-      object-fit: cover;
-      display: block;
+    .project-card {
+      background: var(--card); border: 1px solid var(--card-border);
+      border-radius: 22px; overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      display: flex; flex-direction: column;
     }
+    .project-card:nth-child(1):hover { border-color: rgba(6,182,212,0.35); box-shadow: 0 30px 60px rgba(6,182,212,0.1); transform: translateY(-6px); }
+    .project-card:nth-child(2):hover { border-color: rgba(139,92,246,0.35); box-shadow: 0 30px 60px rgba(139,92,246,0.1); transform: translateY(-6px); }
 
-    section {
-      max-width: 1000px;
-      margin: 60px auto;
-      padding: 20px;
-      background-color: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      border-radius: 10px;
+    .card-header-bar {
+      height: 4px;
     }
+    .bar-cyan { background: linear-gradient(90deg, var(--accent1), var(--accent2)); }
+    .bar-purple { background: linear-gradient(90deg, var(--accent2), var(--accent3)); }
 
-    .title {
-      text-align: center;
-      font-size: 36px;
-      margin-bottom: 10px;
+    .card-video-wrap { background: #080f22; overflow: hidden; }
+    .card-video-wrap video { width: 100%; display: block; max-height: 280px; object-fit: contain; }
+
+    .card-body { padding: 26px; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+    .card-number {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--muted);
     }
+    .card-title { font-size: 1.4rem; font-weight: 700; line-height: 1.2; }
+    .card-title.cyan { color: var(--accent1); }
+    .card-title.purple { color: #a78bfa; }
+    .card-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.75; flex: 1; }
 
-    .label {
-      text-align: center;
-      font-size: 28px;
-      color: red;
-      background-color: aqua;
-      border: 3px solid green;
-      display: inline-block;
-      padding: 5px 20px;
-      margin: 0 auto 20px;
-    }
-
-    .video {
-      display: block;
-      margin: 20px auto;
-      border-radius: 10px;
-    }
-
-    .description {
-      font-size: 20px;
-      padding: 20px;
-      margin: 0 auto;
-      background-color: #f8bbd0;
-      border: 3px solid green;
-      max-width: 600px;
-      text-align: center;
-    }
-
-    .footer-text {
-      text-align: center;
-      font-size: 36px;
-      color: #444;
-      margin-top: 60px;
-    }
-
-    .links {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 40px;
-      margin: 40px 0;
-    }
-
-    .links a {
-      font-size: 32px;
-      text-decoration: none;
-      color: #0077b6;
-      background-color: white;
-      border: 3px solid green;
-      padding: 20px 40px;
+    .highlight-box {
+      padding: 14px 16px;
       border-radius: 12px;
-      transition: background-color 0.3s;
+      font-size: 0.85rem; line-height: 1.6;
+    }
+    .highlight-box.cyan { background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.2); color: #a5f3fc; }
+    .highlight-box.purple { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2); color: #c4b5fd; }
+
+    /* Closing section */
+    .closing {
+      position: relative; z-index: 1;
+      max-width: 700px; margin: 70px auto 0;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .closing-card {
+      background: var(--card); border: 1px solid var(--card-border);
+      border-radius: 22px; padding: 48px 36px;
+      backdrop-filter: blur(10px);
+      position: relative; overflow: hidden;
+    }
+    .closing-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(6,182,212,0.05), rgba(139,92,246,0.05));
+      pointer-events: none;
+    }
+    .closing-emoji { font-size: 3rem; margin-bottom: 16px; display: block; }
+    .closing-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; }
+    .closing-title span { background: linear-gradient(135deg, var(--accent1), var(--accent3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .closing-sub { font-size: 1rem; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 32px; background: linear-gradient(135deg, var(--accent1), var(--accent3));
+      color: white; font-weight: 700; font-size: 0.95rem;
+      border-radius: 100px; text-decoration: none;
+      box-shadow: 0 10px 30px rgba(6,182,212,0.3);
+      transition: all 0.3s;
+    }
+    .back-btn:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(6,182,212,0.4); }
+
+    .nav-cta { position: relative; z-index: 1; display: flex; justify-content: center; gap: 16px; padding: 40px 24px 80px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 32px; border-radius: 100px; font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: all 0.3s; }
+    .btn-outline { background: transparent; border: 1px solid var(--card-border); color: var(--muted); }
+    .btn-outline:hover { border-color: rgba(6,182,212,0.4); color: var(--text); transform: translateY(-2px); }
+
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      .projects { grid-template-columns: 1fr; }
     }
 
-    .links a:hover {
-      background-color: #e3f2fd;
-    }
+    .fade-up { opacity: 0; transform: translateY(30px); animation: fadeUp 0.7s forwards; }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    .fade-up:nth-child(1) { animation-delay: 0.1s; }
+    .fade-up:nth-child(2) { animation-delay: 0.25s; }
   </style>
 </head>
 <body>
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
 
+  <nav>
+    <div class="nav-logo">Jason.dev</div>
+    <div class="nav-steps">
+      <div class="nav-dot"></div>
+      <div class="nav-dot"></div>
+      <div class="nav-dot"></div>
+      <div class="nav-dot"></div>
+      <div class="nav-dot active"></div>
+    </div>
+  </nav>
 
-
-  <section>
-    <h2 class="title">第四個作品</h2>
-    <div class="label">教會資料</div>
-    <video class="video" src="church.mp4" width="600" controls></video>
-    <p class="description">
-      在教會的時候想要做一個教會專屬的 app，專門用來統計人員資料。
-    </p>
+  <section class="hero">
+    <div class="hero-badge">作品 5 / 5</div>
+    <h1>教會 App &<br><span>畢業專題</span></h1>
+    <p>從教會實際需求出發的管理 App，以及結合 AR 擴增實境的畢業設計專題。</p>
   </section>
 
-  <section>
-    <h2 class="title">第五個作品</h2>
-    <div class="label">組裝家具</div>
-    <video class="video" src="unity.mp4" width="400" controls></video>
-    <p class="description">
-      畢業專題：只要掃描圖片就能跑出家具3D動畫，讓教學更有趣。
-    </p>
-  </section>
+  <div class="projects">
+    <div class="project-card fade-up">
+      <div class="card-header-bar bar-cyan"></div>
+      <div class="card-video-wrap">
+        <video src="church.mp4" controls></video>
+      </div>
+      <div class="card-body">
+        <div class="card-number">Project 04</div>
+        <div class="card-title cyan">教會資料管理 App</div>
+        <div class="card-desc">為教會量身打造的人員資料統計應用程式，解決傳統手動記錄的不便，讓資料管理更有效率。</div>
+        <div class="highlight-box cyan">💡 源自真實需求：教會人員資料統計與管理的數位化解決方案</div>
+      </div>
+    </div>
 
-  <div class="footer-text">
-    謝謝各位觀看我的作品！之後還會持續更新～
+    <div class="project-card fade-up">
+      <div class="card-header-bar bar-purple"></div>
+      <div class="card-video-wrap">
+        <video src="unity.mp4" controls></video>
+      </div>
+      <div class="card-body">
+        <div class="card-number">Project 05 · 畢業專題</div>
+        <div class="card-title purple">組裝家具 AR 教學</div>
+        <div class="card-desc">畢業專題作品：掃描圖片即可即時呈現家具的 3D 動畫組裝流程，讓說明書不再難懂。</div>
+        <div class="highlight-box purple">🎓 Unity + AR Foundation 實現擴增實境家具組裝教學體驗</div>
+      </div>
+    </div>
   </div>
 
-  <div class="links">
-    <a href="https://jasonhappyweb.github.io/mysite/我的作品/我的作品.html">我的作品</a>
+  <div class="closing" style="margin-top: 70px;">
+    <div class="closing-card">
+      <span class="closing-emoji">🙌</span>
+      <div class="closing-title">謝謝<span>觀看</span></div>
+      <div class="closing-sub">這是我目前為止的開發歷程，未來還會持續學習、持續創作。<br>期待與你分享更多作品！</div>
+      <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81.html" class="back-btn">回到作品首頁 →</a>
+    </div>
   </div>
 
+  <div class="nav-cta">
+    <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1.html" class="btn btn-outline">← 上一個作品</a>
+  </div>
 </body>
 </html>

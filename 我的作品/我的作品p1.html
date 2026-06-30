@@ -3,137 +3,218 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>我的作品</title>
+  <title>Jason 作品集 | 大學課程作品</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Noto Sans TC', sans-serif;
-      background-color: #f5f5f5;
-      color: #333;
+    :root {
+      --bg: #070d1f;
+      --card: rgba(255,255,255,0.04);
+      --card-border: rgba(255,255,255,0.08);
+      --accent1: #f59e0b;
+      --accent2: #ef4444;
+      --accent3: #6c63ff;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --radius: 16px;
     }
-    header {
-      text-align: center;
-      padding: 40px 0;
-      background-color: #3f9898;
-      color: white;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans TC', 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(245,158,11,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(245,158,11,0.025) 1px, transparent 1px);
+      background-size: 60px 60px; pointer-events: none; z-index: 0;
     }
-    header h1 {
-      font-size: 64px;
-      border: 5px solid white;
-      display: inline-block;
-      padding: 10px 40px;
-      background-color: #3f9898;
+    .blob { position: fixed; border-radius: 50%; filter: blur(140px); pointer-events: none; z-index: 0; opacity: 0.1; }
+    .blob1 { width: 600px; height: 600px; background: var(--accent1); top: -200px; right: -100px; }
+    .blob2 { width: 400px; height: 400px; background: var(--accent2); bottom: -100px; left: -100px; }
+    .blob3 { width: 300px; height: 300px; background: var(--accent3); top: 50%; left: 50%; transform: translate(-50%,-50%); }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px; background: rgba(7,13,31,0.8); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--card-border);
     }
-    section {
-      max-width: 1000px;
-      margin: 60px auto;
-      padding: 20px;
-      background-color: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    .nav-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, var(--accent1), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-steps { display: flex; gap: 6px; align-items: center; }
+    .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: all 0.3s; }
+    .nav-dot.active { background: var(--accent1); box-shadow: 0 0 10px var(--accent1); width: 24px; border-radius: 4px; }
+
+    .hero {
+      position: relative; z-index: 1;
+      padding: 120px 24px 50px; text-align: center;
     }
-    .title {
-      font-size: 36px;
-      text-align: center;
-      margin-bottom: 10px;
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3);
+      border-radius: 100px; font-size: 0.8rem; color: var(--accent1);
+      margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase;
     }
-    .label {
-      font-size: 28px;
-      color: red;
-      background-color: aqua;
-      border: 3px solid green;
-      display: inline-block;
-      padding: 5px 20px;
-      margin-bottom: 20px;
+    .hero-badge::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+    .hero h1 { font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 700; line-height: 1.1; margin-bottom: 14px; letter-spacing: -1px; }
+    .hero h1 span { background: linear-gradient(135deg, var(--accent1), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero p { font-size: 1rem; color: var(--muted); max-width: 480px; margin: 0 auto; line-height: 1.8; }
+
+    /* Projects grid */
+    .projects {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 50px auto;
+      padding: 0 24px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
     }
-    .video {
-      display: block;
-      margin: 0 auto 20px;
-      border-radius: 10px;
+
+    .project-card {
+      background: var(--card); border: 1px solid var(--card-border);
+      border-radius: 20px; overflow: hidden;
+      backdrop-filter: blur(10px);
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      display: flex; flex-direction: column;
     }
-    .description {
-      font-size: 20px;
-      padding: 20px;
-      border: 3px solid green;
-      background-color: #e0f7fa;
-      margin-top: 10px;
+    .project-card:hover { transform: translateY(-6px); box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
+    .project-card:nth-child(1):hover { border-color: rgba(245,158,11,0.4); box-shadow: 0 30px 60px rgba(245,158,11,0.1); }
+    .project-card:nth-child(2):hover { border-color: rgba(239,68,68,0.4); box-shadow: 0 30px 60px rgba(239,68,68,0.1); }
+    .project-card:nth-child(3):hover { border-color: rgba(108,99,255,0.4); box-shadow: 0 30px 60px rgba(108,99,255,0.1); }
+
+    .card-media {
+      position: relative; width: 100%; background: #0a1220;
+      overflow: hidden;
+    }
+    .card-media img { width: 100%; height: 200px; object-fit: cover; display: block; transition: transform 0.5s; }
+    .project-card:hover .card-media img { transform: scale(1.04); }
+    .card-media video { width: 100%; max-height: 220px; display: block; background: #0a1220; }
+
+    .card-num {
+      position: absolute; top: 12px; left: 12px;
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700;
+      backdrop-filter: blur(10px);
+    }
+    .num-amber { background: rgba(245,158,11,0.85); color: #000; }
+    .num-red { background: rgba(239,68,68,0.85); color: #fff; }
+    .num-purple { background: rgba(108,99,255,0.85); color: #fff; }
+
+    .card-body { padding: 22px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+    .card-label {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 100px; font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .label-amber { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+    .label-red { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+    .label-purple { background: rgba(108,99,255,0.12); color: #a5b4fc; border: 1px solid rgba(108,99,255,0.25); }
+
+    .card-title { font-size: 1.2rem; font-weight: 700; }
+    .card-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.7; flex: 1; }
+
+    .card-footer {
+      padding: 14px 22px;
+      border-top: 1px solid var(--card-border);
+      display: flex; align-items: center; justify-content: space-between;
     }
     .ppt-link {
-      display: block;
-      text-align: center;
-      font-size: 24px;
-      margin: 20px 0;
-      color: #007bff;
-      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; color: var(--muted);
+      text-decoration: none; padding: 6px 12px;
+      border: 1px solid var(--card-border); border-radius: 8px;
+      transition: all 0.3s;
     }
-    .nav-links {
-      display: flex;
-      justify-content: space-around;
-      margin: 60px 0;
-    }
-    .nav-links a {
-      font-size: 32px;
-      text-decoration: none;
-      color: #0077b6;
-      background-color: #e3f2fd;
-      padding: 20px 40px;
-      border-radius: 10px;
-      border: 2px solid #0077b6;
-      transition: background-color 0.3s;
-    }
-    .nav-links a:hover {
-      background-color: #b3e5fc;
-    }
-    img {
-      width: 100%;
-      max-height: 400px;
-      object-fit: cover;
-      margin-bottom: 10px;
-    }
+    .ppt-link:hover { color: var(--text); border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+
+    .nav-cta { position: relative; z-index: 1; display: flex; justify-content: center; gap: 16px; padding: 40px 24px 80px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 32px; border-radius: 100px; font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: all 0.3s; }
+    .btn-outline { background: transparent; border: 1px solid var(--card-border); color: var(--muted); }
+    .btn-outline:hover { border-color: rgba(245,158,11,0.4); color: var(--text); transform: translateY(-2px); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; box-shadow: 0 10px 30px rgba(245,158,11,0.3); border: none; }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(245,158,11,0.4); }
+
+    @media (max-width: 640px) { nav { padding: 14px 20px; } .projects { grid-template-columns: 1fr; } }
+
+    .fade-up { opacity: 0; transform: translateY(30px); animation: fadeUp 0.7s forwards; }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    .fade-up:nth-child(1) { animation-delay: 0.1s; }
+    .fade-up:nth-child(2) { animation-delay: 0.2s; }
+    .fade-up:nth-child(3) { animation-delay: 0.3s; }
   </style>
 </head>
 <body>
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
 
-  <header>
-    <h1>my work</h1>
-  </header>
-
-  <section>
-    <h2 class="title">第一個作品</h2>
-    <div class="label">吵架惡搞</div>
-    <img src="abc.jpg" alt="作品圖片1">
-    <video class="video" src="吵架惡搞影片.mp4" width="750" controls></video>
-    <a class="ppt-link" href="數位多媒體.pptx">影片 PPT 檔案</a>
-    <div class="description">
-      用 Video Editor 做的影片，為大學數位多媒體課程作品。
+  <nav>
+    <div class="nav-logo">Jason.dev</div>
+    <div class="nav-steps">
+      <div class="nav-dot"></div>
+      <div class="nav-dot"></div>
+      <div class="nav-dot"></div>
+      <div class="nav-dot active"></div>
+      <div class="nav-dot"></div>
     </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge">作品 4 / 5</div>
+    <h1>大學<span>課程作品</span></h1>
+    <p>大學期間各課程的實作專題，涵蓋影片剪輯、Flutter 遊戲開發與資料庫應用設計。</p>
   </section>
 
-  <section>
-    <h2 class="title">第二個作品</h2>
-    <div class="label">拉霸機</div>
-    <img src="bcd.jfif" alt="作品圖片2">
-    <video class="video" src="拉霸機.mp4" width="500" controls></video>
-    <a class="ppt-link" href="拉霸機.pptx">拉霸機 PPT 檔案</a>
-    <div class="description" style="border-color: red; background-color: #d0faff;">
-      使用 Android Studio (Flutter) 製作的拉霸機遊戲，為行動網路裝置與應用課程作品。
+  <div class="projects">
+    <div class="project-card fade-up">
+      <div class="card-media">
+        <div class="card-num num-amber">01</div>
+        <img src="abc.jpg" alt="吵架惡搞">
+        <video src="吵架惡搞影片.mp4" controls></video>
+      </div>
+      <div class="card-body">
+        <span class="card-label label-amber">數位多媒體</span>
+        <div class="card-title">吵架惡搞影片</div>
+        <div class="card-desc">使用 Video Editor 製作的創意惡搞影片，為大學數位多媒體課程期末作品。</div>
+      </div>
+      <div class="card-footer">
+        <a class="ppt-link" href="數位多媒體.pptx">📊 簡報下載</a>
+      </div>
     </div>
-  </section>
 
-  <section>
-    <h2 class="title">第三個作品</h2>
-    <div class="label">資料庫</div>
-    <img src="efg.jfif" alt="作品圖片3">
-    <video class="video" src="資料庫.mp4" width="600" controls></video>
-    <a class="ppt-link" href="database.pptx">資料庫 PPT 檔案</a>
-    <div class="description" style="background-color: #f8bbd0;">
-      在上 Database 課時製作的期末專題，使用 Android Studio (Flutter) 開發。
+    <div class="project-card fade-up">
+      <div class="card-media">
+        <div class="card-num num-red">02</div>
+        <img src="bcd.jfif" alt="拉霸機">
+        <video src="拉霸機.mp4" controls></video>
+      </div>
+      <div class="card-body">
+        <span class="card-label label-red">行動網路裝置</span>
+        <div class="card-title">拉霸機遊戲</div>
+        <div class="card-desc">使用 Android Studio（Flutter）製作的拉霸機遊戲，為行動網路裝置與應用課程作品。</div>
+      </div>
+      <div class="card-footer">
+        <a class="ppt-link" href="拉霸機.pptx">📊 簡報下載</a>
+      </div>
     </div>
-  </section>
 
-  <div class="nav-links">
-    <a href="https://jasonhappyweb.github.io/mysite/我的作品/我的作品p1_1.html">上一頁</a>
-    <a href="https://jasonhappyweb.github.io/mysite/我的作品/我的作品p2.html">下一頁</a>
+    <div class="project-card fade-up">
+      <div class="card-media">
+        <div class="card-num num-purple">03</div>
+        <img src="efg.jfif" alt="資料庫">
+        <video src="資料庫.mp4" controls></video>
+      </div>
+      <div class="card-body">
+        <span class="card-label label-purple">Database</span>
+        <div class="card-title">資料庫期末專題</div>
+        <div class="card-desc">Database 課程期末作品，以 Android Studio（Flutter）開發，展示完整資料存取功能。</div>
+      </div>
+      <div class="card-footer">
+        <a class="ppt-link" href="database.pptx">📊 簡報下載</a>
+      </div>
+    </div>
   </div>
 
+  <div class="nav-cta">
+    <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1_1.html" class="btn btn-outline">← 上一個作品</a>
+    <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p2.html" class="btn btn-primary">下一個作品 →</a>
+  </div>
 </body>
 </html>

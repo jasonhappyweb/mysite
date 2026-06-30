@@ -3,145 +3,374 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Och 管理系統 Demo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet" />
+  <title>Jason 作品集 | Och 管理系統</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --bg: #070d1f;
+      --bg2: #0d1530;
+      --card: rgba(255,255,255,0.04);
+      --card-border: rgba(255,255,255,0.08);
+      --accent1: #6c63ff;
+      --accent2: #00d4ff;
+      --accent3: #ff6b9d;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --radius: 16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
-      margin: 0;
-      font-family: 'Noto Sans TC', sans-serif;
-      background: linear-gradient(to right, #f2f9ff, #e0f7fa);
-      color: #333;
-      padding: 40px 20px;
+      font-family: 'Noto Sans TC', 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(108,99,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,99,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Glow blobs */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.15;
+    }
+    .blob1 { width: 500px; height: 500px; background: var(--accent1); top: -100px; left: -100px; }
+    .blob2 { width: 400px; height: 400px; background: var(--accent2); bottom: 0; right: 0; }
+
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      background: rgba(7,13,31,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--card-border);
+    }
+    .nav-logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1px;
+    }
+    .nav-steps {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .nav-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: all 0.3s;
+    }
+    .nav-dot.active { background: var(--accent1); box-shadow: 0 0 10px var(--accent1); width: 24px; border-radius: 4px; }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 24px 60px;
       text-align: center;
     }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(108,99,255,0.12);
+      border: 1px solid rgba(108,99,255,0.3);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      color: var(--accent1);
+      margin-bottom: 24px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .hero-badge::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
 
-    h1 {
-      font-size: 2.8rem;
-      color: #0077b6;
-      margin-bottom: 30px;
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 40px;
+      line-height: 1.8;
     }
 
-    .video-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 40px;
+    /* Video Card */
+    .video-card {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 24px;
     }
-
+    .video-wrapper {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(108,99,255,0.1);
+    }
+    .video-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(108,99,255,0.1), transparent);
+      z-index: 1;
+      pointer-events: none;
+    }
     video {
       width: 100%;
-      max-width: 750px;
-      border: 6px solid #0077b6;
-      border-radius: 12px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      display: block;
+      border-radius: 20px;
     }
 
-    .section {
-      background: white;
-      margin: 20px auto;
-      padding: 30px;
-      border-radius: 14px;
-      max-width: 850px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      text-align: left;
+    /* Content Sections */
+    .content {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 0 24px;
+      display: grid;
+      gap: 20px;
     }
-
-    .section h2 {
-      color: #023e8a;
-      margin-bottom: 16px;
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 32px;
+      backdrop-filter: blur(10px);
+      transition: border-color 0.3s, transform 0.3s;
     }
-
-    .section ul {
-      padding-left: 20px;
-      font-size: 1.1rem;
+    .card:hover {
+      border-color: rgba(108,99,255,0.3);
+      transform: translateY(-2px);
     }
-
-    .section ul li {
-      margin-bottom: 8px;
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
     }
-
-    .link-btn {
-      display: inline-block;
-      margin-top: 30px;
-      padding: 15px 40px;
-      font-size: 24px;
-      color: white;
-      background-color: #28a745;
-      border: none;
+    .card-icon {
+      width: 40px; height: 40px;
       border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .card-icon.blue { background: rgba(108,99,255,0.15); }
+    .card-icon.cyan { background: rgba(0,212,255,0.12); }
+    .card h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .tag {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 100px;
+      font-size: 0.875rem;
+      color: var(--text);
+      transition: all 0.3s;
+    }
+    .tag:hover { border-color: rgba(108,99,255,0.4); background: rgba(108,99,255,0.08); }
+    .tag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent1); }
+    .tag-dot.cyan { background: var(--accent2); }
+    .tag-dot.green { background: #4ade80; }
+
+    /* Deploy steps */
+    .deploy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .deploy-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      font-size: 0.875rem;
+    }
+    .step-num {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* CTA Button */
+    .cta-area {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px 24px 80px;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 40px;
+      background: linear-gradient(135deg, var(--accent1), #8b5cf6);
+      color: white;
       text-decoration: none;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      transition: background 0.3s;
+      border-radius: 100px;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 10px 30px rgba(108,99,255,0.4);
+      transition: all 0.3s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px rgba(108,99,255,0.5);
     }
 
-    .link-btn:hover {
-      background-color: #218838;
+    @media (max-width: 640px) {
+      nav { padding: 14px 20px; }
+      .tag-list { gap: 8px; }
+      .deploy-grid { grid-template-columns: 1fr 1fr; }
     }
 
-    @media (max-width: 768px) {
-      body {
-        padding: 20px 10px;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-
-      .section {
-        padding: 20px;
-      }
-
-      .section ul {
-        font-size: 1rem;
-      }
-
-      .link-btn {
-        font-size: 18px;
-        padding: 12px 30px;
-      }
+    /* Fade in animation */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 0.8s forwards;
     }
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.8rem;
-      }
-
-      .link-btn {
-        width: 100%;
-        padding: 14px 0;
-        font-size: 16px;
-      }
-    }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    .fade-up:nth-child(1) { animation-delay: 0.1s; }
+    .fade-up:nth-child(2) { animation-delay: 0.2s; }
+    .fade-up:nth-child(3) { animation-delay: 0.3s; }
+    .fade-up:nth-child(4) { animation-delay: 0.4s; }
   </style>
 </head>
 <body>
-  <h1>Och 管理系統 Demo 展示</h1>
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
 
-  <div class="video-container">
-    <video src="och.mp4" controls></video>
+  <nav>
+    <div class="nav-logo">Jason.dev</div>
+    <div class="nav-steps">
+      <div class="nav-dot active" title="Och 管理系統"></div>
+      <div class="nav-dot" title="福音 App"></div>
+      <div class="nav-dot" title="Line Bot"></div>
+      <div class="nav-dot" title="大學作品"></div>
+      <div class="nav-dot" title="畢業專題"></div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge">作品 1 / 5</div>
+    <h1>Och 管理系統<br><span>Demo 展示</span></h1>
+    <p>企業級後端管理系統，整合現代雲端部署流程與 RESTful API 架構設計。</p>
+  </section>
+
+  <div class="video-card">
+    <div class="video-wrapper">
+      <video src="och.mp4" controls></video>
+    </div>
   </div>
 
-  <div class="section">
-    <h2>使用技術</h2>
-    <ul>
-      <li>✅ ASP.NET Core MVC 架構設計</li>
-      <li>✅ 前端整合 Bootstrap Modal、SweetAlert2、jQuery</li>
-      <li>✅ 後端資料存取：Entity Framework Core + Dapper</li>
-      <li>✅ 資料庫：PostgreSQL</li>
-      <li>✅ RESTful API 與 Swagger 文件</li>
-    </ul>
+  <div class="content">
+    <div class="card fade-up">
+      <div class="card-header">
+        <div class="card-icon blue">⚙️</div>
+        <h2>技術架構</h2>
+      </div>
+      <div class="tag-list">
+        <span class="tag"><span class="tag-dot"></span>ASP.NET Core MVC</span>
+        <span class="tag"><span class="tag-dot cyan"></span>Bootstrap Modal</span>
+        <span class="tag"><span class="tag-dot cyan"></span>SweetAlert2</span>
+        <span class="tag"><span class="tag-dot"></span>jQuery</span>
+        <span class="tag"><span class="tag-dot green"></span>Entity Framework Core</span>
+        <span class="tag"><span class="tag-dot green"></span>Dapper</span>
+        <span class="tag"><span class="tag-dot"></span>PostgreSQL</span>
+        <span class="tag"><span class="tag-dot cyan"></span>RESTful API</span>
+        <span class="tag"><span class="tag-dot"></span>Swagger</span>
+      </div>
+    </div>
+
+    <div class="card fade-up">
+      <div class="card-header">
+        <div class="card-icon cyan">🚀</div>
+        <h2>部署流程</h2>
+      </div>
+      <div class="deploy-grid">
+        <div class="deploy-step"><div class="step-num">1</div><span>GitHub 版本控制</span></div>
+        <div class="deploy-step"><div class="step-num">2</div><span>Docker 容器化</span></div>
+        <div class="deploy-step"><div class="step-num">3</div><span>Render 雲端部署</span></div>
+        <div class="deploy-step"><div class="step-num">4</div><span>Webhook + Make 整合</span></div>
+      </div>
+    </div>
   </div>
 
-  <div class="section">
-    <h2>部署流程</h2>
-    <ul>
-      <li>📦 GitHub 儲存程式碼與自動推送版本</li>
-      <li>🐳 Docker 建立容器映像（Dockerfile）</li>
-      <li>☁️ Render 免費雲平台自動部署並運行</li>
-      <li>🔁 Webhook 整合 Make 自動接收外部資料並串接 Regic 系統</li>
-    </ul>
+  <div class="cta-area">
+    <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1_0.html" class="btn-primary">
+      下一個作品 <span>→</span>
+    </a>
   </div>
-
-  <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1_0.html" class="link-btn">下一頁 ➡️</a>
-
 </body>
 </html>

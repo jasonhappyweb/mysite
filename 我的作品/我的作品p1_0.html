@@ -3,107 +3,237 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>福音紀錄上傳 App</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet" />
+  <title>Jason 作品集 | 福音紀錄 App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --bg: #070d1f;
+      --bg2: #0d1530;
+      --card: rgba(255,255,255,0.04);
+      --card-border: rgba(255,255,255,0.08);
+      --accent1: #a855f7;
+      --accent2: #ec4899;
+      --accent3: #6c63ff;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --radius: 16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
-      margin: 0;
-      font-family: 'Noto Sans TC', sans-serif;
-      background: linear-gradient(to right, #fdfcfb, #e2d1c3);
-      color: #333;
-      padding: 40px 20px;
+      font-family: 'Noto Sans TC', 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(168,85,247,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168,85,247,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; opacity: 0.15; }
+    .blob1 { width: 500px; height: 500px; background: var(--accent1); top: -100px; right: -100px; }
+    .blob2 { width: 400px; height: 400px; background: var(--accent2); bottom: 0; left: 0; }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      background: rgba(7,13,31,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--card-border);
+    }
+    .nav-logo {
+      font-size: 1.2rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .nav-steps { display: flex; gap: 6px; align-items: center; }
+    .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: all 0.3s; }
+    .nav-dot.active { background: var(--accent1); box-shadow: 0 0 10px var(--accent1); width: 24px; border-radius: 4px; }
+
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 100px 24px 60px;
       text-align: center;
     }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px;
+      background: rgba(168,85,247,0.12);
+      border: 1px solid rgba(168,85,247,0.3);
+      border-radius: 100px;
+      font-size: 0.8rem; color: var(--accent1);
+      margin-bottom: 24px;
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+    .hero-badge::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700; line-height: 1.1;
+      margin-bottom: 20px; letter-spacing: -1px;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero p { font-size: 1.1rem; color: var(--muted); max-width: 520px; margin: 0 auto 40px; line-height: 1.8; }
 
-    h1 {
-      font-size: 2.8rem;
-      color: #8e44ad;
-      margin-bottom: 30px;
+    .video-card { position: relative; z-index: 1; max-width: 650px; margin: 0 auto; padding: 0 24px; }
+    .video-wrapper {
+      position: relative; border-radius: 28px; overflow: hidden;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(168,85,247,0.1);
+    }
+    .video-wrapper::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(168,85,247,0.1), transparent);
+      z-index: 1; pointer-events: none;
+    }
+    video { width: 100%; display: block; }
+
+    .content {
+      position: relative; z-index: 1;
+      max-width: 900px; margin: 60px auto;
+      padding: 0 24px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 28px;
+      backdrop-filter: blur(10px);
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .card:hover { border-color: rgba(168,85,247,0.3); transform: translateY(-2px); }
+    .card.full { grid-column: 1 / -1; }
+    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .card-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .card-icon.purple { background: rgba(168,85,247,0.15); }
+    .card-icon.pink { background: rgba(236,72,153,0.12); }
+    .card h2 { font-size: 1rem; font-weight: 600; color: var(--text); }
+
+    .feature-list { display: flex; flex-direction: column; gap: 10px; }
+    .feature-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px; border: 1px solid var(--card-border);
+      font-size: 0.875rem; line-height: 1.6;
+    }
+    .feature-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+    .feature-dot.purple { background: var(--accent1); }
+    .feature-dot.pink { background: var(--accent2); }
+
+    .stack-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .stack-chip {
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      background: rgba(168,85,247,0.1);
+      border: 1px solid rgba(168,85,247,0.25);
+      color: #d4b8ff;
     }
 
-    .video-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 40px;
+    .nav-cta {
+      position: relative; z-index: 1;
+      display: flex; justify-content: center; gap: 16px;
+      padding: 40px 24px 80px; flex-wrap: wrap;
     }
+    .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 32px; border-radius: 100px; font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: all 0.3s; }
+    .btn-outline { background: transparent; border: 1px solid var(--card-border); color: var(--muted); }
+    .btn-outline:hover { border-color: rgba(168,85,247,0.4); color: var(--text); transform: translateY(-2px); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; box-shadow: 0 10px 30px rgba(168,85,247,0.35); border: none; }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(168,85,247,0.45); }
 
-    video {
-      width: 90vw;              /* 根據螢幕寬度自適應 */
-      max-width: 600px;         /* 最大寬度不超過 600px */
-      height: auto;
-      border: 6px solid #8e44ad;
-      border-radius: 12px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    @media (max-width: 640px) {
+      nav { padding: 14px 20px; }
+      .content { grid-template-columns: 1fr; }
+      .card.full { grid-column: 1; }
     }
-    
-
-    .section {
-      background: white;
-      margin: 20px auto;
-      padding: 30px;
-      border-radius: 14px;
-      max-width: 850px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      text-align: left;
-    }
-
-    .section h2 {
-      color: #6c3483;
-      margin-bottom: 16px;
-    }
-
-    .section ul {
-      padding-left: 20px;
-      font-size: 1.1rem;
-    }
-
-    .section ul li {
-      margin-bottom: 8px;
-    }
-
-    .nav-btn {
-      display: inline-block;
-      margin: 20px 10px;
-      padding: 14px 30px;
-      font-size: 20px;
-      background-color: #8e44ad;
-      color: white;
-      border-radius: 10px;
-      text-decoration: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      transition: background 0.3s;
-    }
-
-    .nav-btn:hover {
-      background-color: #5e3370;
-    }
+    .fade-up { opacity: 0; transform: translateY(30px); animation: fadeUp 0.8s forwards; }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    .fade-up:nth-child(1) { animation-delay: 0.1s; }
+    .fade-up:nth-child(2) { animation-delay: 0.25s; }
+    .fade-up:nth-child(3) { animation-delay: 0.4s; }
   </style>
 </head>
 <body>
-  <h1>福音紀錄上傳 App Demo</h1>
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
 
-  <div class="video-container">
-    <video src="app.mp4" controls></video>
+  <nav>
+    <div class="nav-logo">Jason.dev</div>
+    <div class="nav-steps">
+      <div class="nav-dot" title="Och 管理系統"></div>
+      <div class="nav-dot active" title="福音 App"></div>
+      <div class="nav-dot" title="Line Bot"></div>
+      <div class="nav-dot" title="大學作品"></div>
+      <div class="nav-dot" title="畢業專題"></div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge">作品 2 / 5</div>
+    <h1>福音紀錄<br><span>上傳 App</span></h1>
+    <p>Flutter 跨平台行動應用，讓教會人員輕鬆記錄並上傳每日傳福音統計資料。</p>
+  </section>
+
+  <div class="video-card">
+    <div class="video-wrapper">
+      <video src="app.mp4" controls></video>
+    </div>
   </div>
 
-  <div class="section">
-    <h2>技術使用</h2>
-    <ul>
-      <li>📱 Flutter + Dart 建構跨平台行動 App</li>
-      <li>🔗 與 Swagger 自動生成 API 對接</li>
-      <li>☁️ 資料上傳至雲端後台管理系統</li>
-    </ul>
+  <div class="content">
+    <div class="card fade-up">
+      <div class="card-header">
+        <div class="card-icon purple">📱</div>
+        <h2>技術使用</h2>
+      </div>
+      <div class="stack-grid">
+        <span class="stack-chip">Flutter</span>
+        <span class="stack-chip">Dart</span>
+        <span class="stack-chip">Swagger API</span>
+        <span class="stack-chip">雲端後台</span>
+        <span class="stack-chip">跨平台部署</span>
+      </div>
+    </div>
+
+    <div class="card fade-up">
+      <div class="card-header">
+        <div class="card-icon pink">✨</div>
+        <h2>應用情境</h2>
+      </div>
+      <div class="feature-list">
+        <div class="feature-item"><div class="feature-dot purple"></div><span>教會每日傳福音人次自動統計</span></div>
+        <div class="feature-item"><div class="feature-dot pink"></div><span>資料即時上傳雲端後台管理系統</span></div>
+      </div>
+    </div>
   </div>
 
-  <div class="section">
-    <h2>應用情境</h2>
-    <ul>
-      <li>✅ 教會天天都有傳福音的行動教會會記錄每天有多少人傳福</li>
-      <li>✅ 自動統計傳福音的結果</li>
-    </ul>
+  <div class="nav-cta">
+    <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81.html" class="btn btn-outline">← 上一個作品</a>
+    <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1_1.html" class="btn btn-primary">下一個作品 →</a>
   </div>
-
-  <a class="nav-btn" href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81.html">⬅️ 上一頁</a>
-  <a class="nav-btn" href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1_1.html">下一頁 ➡️</a>
 </body>
 </html>

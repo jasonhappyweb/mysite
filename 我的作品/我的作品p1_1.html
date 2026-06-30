@@ -1,176 +1,236 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>Line Bot 報名系統展示</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jason 作品集 | Line Bot 報名系統</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f5f8fa;
-      color: #333;
-      margin: 0;
-      padding: 20px;
+    :root {
+      --bg: #070d1f;
+      --card: rgba(255,255,255,0.04);
+      --card-border: rgba(255,255,255,0.08);
+      --accent1: #00c97a;
+      --accent2: #00d4ff;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --radius: 16px;
     }
-    h1 {
-      text-align: center;
-      color: #2c7be5;
-      margin-bottom: 30px;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans TC', 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(0,201,122,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,201,122,0.03) 1px, transparent 1px);
+      background-size: 60px 60px; pointer-events: none; z-index: 0;
     }
-    .carousel-container {
-      max-width: 800px;
-      margin: 0 auto;
+    .blob { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; opacity: 0.12; }
+    .blob1 { width: 500px; height: 500px; background: var(--accent1); top: -150px; left: -100px; }
+    .blob2 { width: 400px; height: 400px; background: var(--accent2); bottom: 0; right: 0; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px;
+      background: rgba(7,13,31,0.8); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--card-border);
+    }
+    .nav-logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, var(--accent1), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-steps { display: flex; gap: 6px; align-items: center; }
+    .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: all 0.3s; }
+    .nav-dot.active { background: var(--accent1); box-shadow: 0 0 10px var(--accent1); width: 24px; border-radius: 4px; }
+
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 60vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 120px 24px 40px; text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; background: rgba(0,201,122,0.1); border: 1px solid rgba(0,201,122,0.3);
+      border-radius: 100px; font-size: 0.8rem; color: var(--accent1);
+      margin-bottom: 24px; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .hero-badge::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
+    .hero h1 { font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 700; line-height: 1.1; margin-bottom: 16px; letter-spacing: -1px; }
+    .hero h1 span { background: linear-gradient(135deg, var(--accent1), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero p { font-size: 1.05rem; color: var(--muted); max-width: 520px; margin: 0 auto; line-height: 1.8; }
+
+    /* Carousel */
+    .carousel-section {
+      position: relative; z-index: 1;
+      max-width: 700px; margin: 40px auto 0; padding: 0 24px;
+    }
+    .carousel-track {
       position: relative;
+      border-radius: 20px; overflow: hidden;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,201,122,0.08);
+      background: #0a1220;
     }
-    .carousel-slide {
-      display: none;
+    .slide { display: none; }
+    .slide.active { display: block; }
+    .slide img {
+      width: 100%; display: block;
+      max-height: 440px; object-fit: contain;
+      background: #0a1220;
     }
-    .carousel-slide.active {
-      display: block;
+    .slide-caption {
+      padding: 16px 20px;
+      background: rgba(0,0,0,0.4);
+      font-size: 0.875rem; color: var(--muted);
+      line-height: 1.6; text-align: center;
+      border-top: 1px solid var(--card-border);
     }
-    .carousel-slide img {
-      width: 100%;
-      height: 400px;
-      object-fit: contain;
-      border-radius: 12px;
-      border: 1px solid #ccc;
-      background-color: #fff;
-    }
-    .caption {
-      text-align: center;
-      margin-top: 10px;
-      font-size: 1rem;
-    }
-    .nav-buttons {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .nav-buttons button {
-      padding: 10px 20px;
-      margin: 0 5px;
-      font-size: 1rem;
-      background-color: #2c7be5;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .slide-indicator {
-      text-align: center;
-      margin-top: 10px;
-      font-size: 1rem;
-      color: #666;
-    }
-    .tech-stack {
-      max-width: 800px;
-      margin: 50px auto 0;
-      background: #ffffff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 20px;
-    }
-    .tech-stack h2 {
-      color: #2c7be5;
-      margin-bottom: 10px;
-    }
-    .tech-stack ul {
-      padding-left: 20px;
-    }
-  .nav-button {
-    display: inline-block;
-    margin: 0 10px;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none;
-    border-radius: 30px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-  }
 
-  .nav-button.back {
-    background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
-    color: #003366;
-  }
+    .carousel-controls {
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; margin-top: 20px;
+    }
+    .ctrl-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--card); border: 1px solid var(--card-border);
+      color: var(--text); font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s;
+    }
+    .ctrl-btn:hover { background: rgba(0,201,122,0.15); border-color: rgba(0,201,122,0.4); }
+    .slide-dots { display: flex; gap: 6px; }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--muted); cursor: pointer;
+      transition: all 0.3s; border: none;
+    }
+    .dot.active { background: var(--accent1); box-shadow: 0 0 8px var(--accent1); width: 24px; border-radius: 4px; }
 
-  .nav-button.next {
-    background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
-    color: #4a004a;
-  }
+    /* Tech grid */
+    .content {
+      position: relative; z-index: 1;
+      max-width: 900px; margin: 50px auto;
+      padding: 0 24px; display: grid; gap: 20px;
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 28px;
+      backdrop-filter: blur(10px); transition: border-color 0.3s, transform 0.3s;
+    }
+    .card:hover { border-color: rgba(0,201,122,0.3); transform: translateY(-2px); }
+    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .card-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; background: rgba(0,201,122,0.12); }
+    .card h2 { font-size: 1rem; font-weight: 600; }
 
-  .nav-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    opacity: 0.9;
-  }
+    .tech-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+    .tech-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 10px; font-size: 0.85rem;
+    }
+    .tech-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    .nav-cta { position: relative; z-index: 1; display: flex; justify-content: center; gap: 16px; padding: 40px 24px 80px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 32px; border-radius: 100px; font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: all 0.3s; }
+    .btn-outline { background: transparent; border: 1px solid var(--card-border); color: var(--muted); }
+    .btn-outline:hover { border-color: rgba(0,201,122,0.4); color: var(--text); transform: translateY(-2px); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: #070d1f; font-weight: 700; box-shadow: 0 10px 30px rgba(0,201,122,0.3); border: none; }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(0,201,122,0.4); }
+
+    @media (max-width: 640px) { nav { padding: 14px 20px; } .tech-grid { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
 
-  <h1>Line Bot 自動報名系統展示</h1>
+  <nav>
+    <div class="nav-logo">Jason.dev</div>
+    <div class="nav-steps">
+      <div class="nav-dot"></div>
+      <div class="nav-dot"></div>
+      <div class="nav-dot active"></div>
+      <div class="nav-dot"></div>
+      <div class="nav-dot"></div>
+    </div>
+  </nav>
 
-  <div class="carousel-container">
-    <div class="carousel-slide active">
-      <img src="LineDemo1.png" alt="報名訊息">
-      <div class="caption">📩 使用者輸入代碼 → 自動回應「報名」提示 → 系統 API 接收 Line ID 與名稱</div>
+  <section class="hero">
+    <div class="hero-badge">作品 3 / 5</div>
+    <h1>Line Bot<br><span>自動報名系統</span></h1>
+    <p>整合 LINE Messaging API 與 Hangfire 排程，打造自動化報名、繳費提醒的完整流程。</p>
+  </section>
+
+  <div class="carousel-section">
+    <div class="carousel-track">
+      <div class="slide active">
+        <img src="LineDemo1.png" alt="報名訊息">
+        <div class="slide-caption">📩 使用者輸入代碼 → 自動回應「報名」提示 → 系統 API 接收 Line ID 與名稱</div>
+      </div>
+      <div class="slide">
+        <img src="LineDemo2.png" alt="報名成功">
+        <div class="slide-caption">✅ 報名成功：顯示使用者資訊與報名狀態，記錄時間與費用</div>
+      </div>
+      <div class="slide">
+        <img src="LineDemo3.png" alt="自動提醒繳費">
+        <div class="slide-caption">⏰ 活動前自動提醒：Hangfire 定時推播提醒使用者繳費</div>
+      </div>
+      <div class="slide">
+        <img src="LineDemo4.png" alt="繳費完成">
+        <div class="slide-caption">💵 使用者完成繳費後，系統自動更新狀態為「已繳交」</div>
+      </div>
     </div>
-    <div class="carousel-slide">
-      <img src="LineDemo2.png" alt="報名成功畫面">
-      <div class="caption">✅ 報名成功畫面：顯示使用者資訊與報名狀態，記錄時間與費用</div>
-    </div>
-    <div class="carousel-slide">
-      <img src="LineDemo3.png" alt="自動提醒繳費">
-      <div class="caption">⏰ 活動前自動提醒：Hangfire 定時推播提醒使用者繳費</div>
-    </div>
-    <div class="carousel-slide">
-      <img src="LineDemo4.png" alt="繳費完成更新畫面">
-      <div class="caption">💵 使用者完成繳費後，系統自動更新狀態為「已繳交」</div>
+    <div class="carousel-controls">
+      <button class="ctrl-btn" onclick="changeSlide(-1)">‹</button>
+      <div class="slide-dots" id="dots"></div>
+      <button class="ctrl-btn" onclick="changeSlide(1)">›</button>
     </div>
   </div>
 
-  <div class="slide-indicator" id="slideIndicator">第 1 張 / 共 4 張</div>
-
-  <div class="nav-buttons">
-    <button onclick="changeSlide(-1)">上一頁</button>
-    <button onclick="changeSlide(1)">上一頁</button>
+  <div class="content">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🛠️</div>
+        <h2>使用技術</h2>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-item"><span class="tech-icon">🔗</span>LINE Messaging API</div>
+        <div class="tech-item"><span class="tech-icon">📩</span>Webhook 綁定</div>
+        <div class="tech-item"><span class="tech-icon">📅</span>Hangfire 排程</div>
+        <div class="tech-item"><span class="tech-icon">🌐</span>ASP.NET Core MVC</div>
+        <div class="tech-item"><span class="tech-icon">🗄️</span>PostgreSQL</div>
+        <div class="tech-item"><span class="tech-icon">☁️</span>Render 雲端部署</div>
+        <div class="tech-item"><span class="tech-icon">📦</span>GitHub CI/CD</div>
+      </div>
+    </div>
   </div>
 
-  <div class="tech-stack">
-    <h2>🛠️ 使用技術</h2>
-<ul>
-  <li>🔗 LINE Messaging API</li>
-  <li>📩 Webhook 即時訊息接收與資料綁定</li>
-  <li>📅 Hangfire 任務排程（結合 PostgreSQL）</li>
-  <li>🌐 ASP.NET Core MVC 架構</li>
-  <li>🗄️ PostgreSQL 資料庫</li>
-  <li>☁️ Render 雲端部署</li>
-  <li>📦 GitHub 專案管理與 CI/CD</li>
-</ul>
+  <div class="nav-cta">
+    <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1_0.html" class="btn btn-outline">← 上一個作品</a>
+    <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1.html" class="btn btn-primary">下一個作品 →</a>
   </div>
-<div style="text-align: center; margin-bottom: 30px;">
-  <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1_0.html" class="nav-button back">◀ 上一個作品</a>
-  <a href="https://jasonhappyweb.github.io/mysite/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81/%E6%88%91%E7%9A%84%E4%BD%9C%E5%93%81p1.html" class="nav-button next">下一個作品 ▶</a>
-</div>
+
   <script>
-    let currentIndex = 0;
-    const slides = document.querySelectorAll('.carousel-slide');
-    const slideIndicator = document.getElementById('slideIndicator');
+    let current = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dotsContainer = document.getElementById('dots');
 
-    function showSlide(index) {
-      slides.forEach((slide, i) => {
-        slide.classList.toggle('active', i === index);
-      });
-      slideIndicator.innerText = `第 ${index + 1} 張 / 共 ${slides.length} 張`;
+    slides.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => goTo(i);
+      dotsContainer.appendChild(d);
+    });
+
+    function goTo(n) {
+      slides[current].classList.remove('active');
+      dotsContainer.children[current].classList.remove('active');
+      current = (n + slides.length) % slides.length;
+      slides[current].classList.add('active');
+      dotsContainer.children[current].classList.add('active');
     }
-
-    function changeSlide(n) {
-      currentIndex = (currentIndex + n + slides.length) % slides.length;
-      showSlide(currentIndex);
-    }
-
-    // 初始化頁碼
-    showSlide(currentIndex);
+    function changeSlide(n) { goTo(current + n); }
   </script>
-
 </body>
 </html>
